@@ -33,20 +33,34 @@ def truncate_text(text: str, max_length: int = MAX_DESCRIPTION_LENGTH) -> str:
         return text[:max_length - 3] + "..."
     return text
 
-def optimize_project_response(project: dict) -> dict:
-    """Optimize project object for MCP response."""
+def optimize_project_response(project: dict, minimal: bool = False) -> dict:
+    """
+    Optimize project object for MCP response.
+    When using include_content=false, API already returns lightweight responses with stats.
+    This function now just ensures description is truncated if present.
+
+    Args:
+        project: Project dict to optimize
+        minimal: If True, return only essential fields (id, title, stats)
+    """
     project = project.copy()  # Don't modify original
-    
+
+    if minimal:
+        # Return absolute minimum for list responses
+        return {
+            "id": project["id"],
+            "title": project["title"],
+            "stats": project.get("stats", {}),
+            "created_at": project.get("created_at"),
+        }
+
     # Truncate description if present
     if "description" in project and project["description"]:
         project["description"] = truncate_text(project["description"])
-    
-    # Remove or summarize large fields
-    if "features" in project and isinstance(project["features"], list):
-        project["features_count"] = len(project["features"])
-        if len(project["features"]) > 3:
-            project["features"] = project["features"][:3]  # Keep first 3
-    
+
+    # Note: With include_content=false, we get stats instead of full arrays
+    # stats: {docs_count, features_count, has_data}
+
     return project
 
 
@@ -101,9 +115,12 @@ def register_project_tools(mcp: FastMCP):
                     else:
                         return MCPErrorFormatter.from_http_error(response, "get project")
             
-            # List mode
+            # List mode (use lightweight response to avoid massive payloads)
             async with httpx.AsyncClient(timeout=timeout) as client:
-                response = await client.get(urljoin(api_url, "/api/projects"))
+                response = await client.get(
+                    urljoin(api_url, "/api/projects"),
+                    params={"include_content": "false"}
+                )
                 
                 if response.status_code == 200:
                     data = response.json()
@@ -122,10 +139,10 @@ def register_project_tools(mcp: FastMCP):
                     start_idx = (page - 1) * per_page
                     end_idx = start_idx + per_page
                     paginated = projects[start_idx:end_idx]
-                    
-                    # Optimize project responses
-                    optimized = [optimize_project_response(p) for p in paginated]
-                    
+
+                    # Optimize project responses (minimal for lists)
+                    optimized = [optimize_project_response(p, minimal=True) for p in paginated]
+
                     return json.dumps({
                         "success": True,
                         "projects": optimized,
