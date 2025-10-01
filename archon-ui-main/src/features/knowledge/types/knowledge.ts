@@ -147,11 +147,33 @@ export interface UploadMetadata {
   tags?: string[];
 }
 
+export interface ZoteroCollection {
+  key: string;
+  name: string;
+  parent_collection?: string;
+  version: number;
+}
+
+export interface ZoteroCollectionsRequest {
+  api_key: string;
+  user_id?: string;
+  group_id?: string;
+}
+
+export interface ZoteroSyncRequest {
+  api_key: string;
+  user_id?: string;
+  group_id?: string;
+  collection_key: string;
+  collection_name: string;
+}
+
 export interface SearchOptions {
   query: string;
   knowledge_type?: "technical" | "business";
   sources?: string[];
   limit?: number;
+  filter_metadata?: Record<string, any>;
 }
 
 // UI-specific types

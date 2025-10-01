@@ -13,6 +13,7 @@ import asyncio
 import json
 import uuid
 from datetime import datetime
+from typing import Any
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -177,6 +178,7 @@ class RagQueryRequest(BaseModel):
     query: str
     source: str | None = None
     match_count: int = 5
+    filter_metadata: dict[str, Any] | None = None
 
 
 @router.get("/crawl-progress/{progress_id}")
@@ -1119,7 +1121,10 @@ async def perform_rag_query(request: RagQueryRequest):
         # Use RAGService for RAG query
         search_service = RAGService(get_supabase_client())
         success, result = await search_service.perform_rag_query(
-            query=request.query, source=request.source, match_count=request.match_count
+            query=request.query,
+            source=request.source,
+            match_count=request.match_count,
+            filter_metadata=request.filter_metadata,
         )
 
         if success:
@@ -1342,4 +1347,321 @@ async def stop_crawl_task(progress_id: str):
         safe_logfire_error(
             f"Failed to stop crawl task | error={str(e)} | progress_id={progress_id}"
         )
+        raise HTTPException(status_code=500, detail={"error": str(e)})
+
+
+# Zotero Integration Endpoints
+
+
+class ZoteroCollectionsRequest(BaseModel):
+    # Credentials are now read from settings, no longer required in request
+    pass
+
+
+class ZoteroSyncRequest(BaseModel):
+    collection_key: str
+    collection_name: str
+
+
+@router.post("/knowledge-items/zotero/collections")
+async def get_zotero_collections(request: ZoteroCollectionsRequest):
+    """
+    Fetch collections from a Zotero library.
+
+    Returns list of collections with their keys and names.
+    Credentials are read from stored settings (ZOTERO_TOKEN, ZOTERO_USER_ID or ZOTERO_GROUP_ID).
+    """
+    try:
+        from ..services.zotero_service import ZoteroService
+        from ..services.credential_service import credential_service
+
+        safe_logfire_info("Fetching Zotero collections from stored credentials")
+
+        # Get credentials from settings
+        api_key = await credential_service.get_credential("ZOTERO_TOKEN", decrypt=True)
+        user_id = await credential_service.get_credential("ZOTERO_USER_ID", decrypt=False)
+        group_id = await credential_service.get_credential("ZOTERO_GROUP_ID", decrypt=False)
+
+        if not api_key:
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "Zotero API key not configured. Please add it in Settings."}
+            )
+
+        if not user_id and not group_id:
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "Either Zotero User ID or Group ID must be configured in Settings."}
+            )
+
+        zotero = ZoteroService(
+            api_key=api_key,
+            user_id=user_id,
+            group_id=group_id,
+        )
+
+        collections = await zotero.get_collections()
+
+        return {
+            "success": True,
+            "collections": collections,
+            "total": len(collections),
+        }
+
+    except HTTPException:
+        raise
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail={"error": str(e)})
+    except Exception as e:
+        safe_logfire_error(f"Failed to fetch Zotero collections | error={str(e)}")
+        raise HTTPException(status_code=500, detail={"error": str(e)})
+
+
+async def _process_zotero_sync(
+    progress_id: str,
+    collection_key: str,
+    collection_name: str,
+):
+    """Background task to process Zotero sync"""
+    from ..services.zotero_service import ZoteroService
+    from ..services.storage import DocumentStorageService
+    from ..utils.progress import ProgressTracker
+
+    tracker = ProgressTracker(progress_id, "zotero_sync")
+
+    try:
+        from ..services.credential_service import credential_service
+
+        await tracker.start()
+        await tracker.update(status="processing", progress=5, log="Reading Zotero credentials...")
+
+        # Get credentials from settings
+        api_key = await credential_service.get_credential("ZOTERO_TOKEN", decrypt=True)
+        user_id = await credential_service.get_credential("ZOTERO_USER_ID", decrypt=False)
+        group_id = await credential_service.get_credential("ZOTERO_GROUP_ID", decrypt=False)
+
+        if not api_key:
+            await tracker.error(log="Zotero API key not configured in settings")
+            return
+
+        await tracker.update(status="processing", progress=10, log="Connecting to Zotero...")
+
+        # Initialize Zotero service
+        zotero = ZoteroService(
+            api_key=api_key,
+            user_id=user_id,
+            group_id=group_id,
+        )
+
+        # Fetch items from collection
+        items = await zotero.get_collection_items(collection_key)
+
+        await tracker.update(
+            status="processing",
+            progress=15,
+            log=f"Found {len(items)} items in collection",
+        )
+
+        # Process each item
+        processed_count = 0
+        error_count = 0
+        storage_service = DocumentStorageService(get_supabase_client())
+
+        # Log all item types to understand what we're getting
+        item_types = {}
+        for item in items:
+            item_type = item["data"]["itemType"]
+            item_types[item_type] = item_types.get(item_type, 0) + 1
+        logger.info(f"Item types in collection: {item_types}")
+
+        # Log ALL items with their keys, types, parent relationships, and titles
+        logger.info("=== ALL ITEMS IN COLLECTION ===")
+        for item in items:
+            item_type = item["data"]["itemType"]
+            item_key = item.get("key", "UNKNOWN")
+            parent_key = item["data"].get("parentItem", "NONE")
+            title = item["data"].get("title", "NO_TITLE")[:50]
+            logger.info(f"  Item {item_key}: type={item_type}, parent={parent_key}, title={title}")
+        logger.info("=== END ALL ITEMS ===")
+
+        # First, build a map of parent items to their PDF attachments
+        # Zotero stores PDFs as separate items with parentItem field
+        parent_to_pdfs = {}
+        standalone_papers = []
+
+        for item in items:
+            item_type = item["data"]["itemType"]
+            item_key = item.get("key", "UNKNOWN")
+
+            # Check if this is a PDF attachment
+            if item_type == "attachment":
+                content_type = item["data"].get("contentType", "")
+                parent_key = item["data"].get("parentItem")
+
+                logger.info(f"Found attachment item: contentType={content_type}, parentKey={parent_key}, hasParent={bool(parent_key)}")
+
+                if "pdf" in content_type.lower() and parent_key:
+                    if parent_key not in parent_to_pdfs:
+                        parent_to_pdfs[parent_key] = []
+                    parent_to_pdfs[parent_key].append(item)
+                    logger.info(f"Found PDF attachment for parent {parent_key}: {item['data'].get('title', 'Untitled')}")
+
+            # Check if this is a paper item (including preprints, documents, etc.)
+            elif item_type in ["journalArticle", "conferencePaper", "book", "thesis", "report", "preprint", "document"]:
+                standalone_papers.append(item)
+
+        logger.info(f"Found {len(standalone_papers)} papers and {len(parent_to_pdfs)} papers with PDFs")
+        logger.info(f"Parent keys with PDFs: {list(parent_to_pdfs.keys())}")
+
+        # Check for orphaned PDFs (PDFs whose parent is not in the collection)
+        standalone_paper_keys = {item.get("key") for item in standalone_papers}
+        orphaned_pdf_parents = set(parent_to_pdfs.keys()) - standalone_paper_keys
+
+        if orphaned_pdf_parents:
+            logger.warning(f"Found {len(orphaned_pdf_parents)} orphaned PDF(s) with missing parent items: {list(orphaned_pdf_parents)}")
+            logger.warning("These PDFs reference parent items that are not in the collection")
+            logger.warning("Attempting to fetch missing parent items directly from Zotero API...")
+
+            # Try to fetch orphaned parent items directly
+            for parent_key in orphaned_pdf_parents:
+                try:
+                    logger.info(f"Fetching missing parent item {parent_key} from Zotero API...")
+                    parent_item = await zotero.get_item(parent_key)
+                    if parent_item:
+                        item_type = parent_item["data"]["itemType"]
+                        logger.info(f"Successfully fetched parent item {parent_key} with type {item_type}")
+                        # Add to standalone_papers if it's a paper type
+                        if item_type in ["journalArticle", "conferencePaper", "book", "thesis", "report", "preprint", "document"]:
+                            standalone_papers.append(parent_item)
+                            logger.info(f"Added orphaned parent {parent_key} to papers list for processing")
+                        else:
+                            logger.warning(f"Parent item {parent_key} is type {item_type}, not a paper - skipping")
+                    else:
+                        logger.warning(f"Could not fetch parent item {parent_key} - it may have been deleted")
+                except Exception as e:
+                    logger.error(f"Error fetching orphaned parent {parent_key}: {e}")
+
+        # Now process papers with their PDFs
+        for idx, item in enumerate(standalone_papers):
+            try:
+                metadata = zotero.extract_item_metadata(item)
+                item_key = metadata["key"]
+
+                logger.info(f"Checking paper {item_key}: {metadata['title'][:50]}...")
+
+                # Check if we have PDFs for this item
+                pdf_attachments = parent_to_pdfs.get(item_key, [])
+
+                if not pdf_attachments:
+                    logger.info(f"No PDF found for: {metadata['title']}")
+                    continue
+
+                logger.info(f"Found PDF for {metadata['title']}, downloading...")
+
+                # Download first PDF attachment
+                pdf_data = await zotero.download_attachment(pdf_attachments[0]["key"])
+                if not pdf_data:
+                    logger.warning(f"Failed to download PDF for: {metadata['title']}")
+                    error_count += 1
+                    continue
+
+                # Prepare tags: collection name + any existing Zotero tags
+                tags = [collection_name] + metadata.get("tags", [])
+
+                # Store in knowledge base
+                source_id = f"zotero_{metadata['key']}"
+
+                # Extract text from PDF
+                from ..utils.document_processing import extract_text_from_document
+                filename = f"{metadata['title']}.pdf"
+                text_content = extract_text_from_document(pdf_data, filename, "application/pdf")
+
+                if not text_content:
+                    logger.warning(f"Could not extract text from: {metadata['title']}")
+                    error_count += 1
+                    continue
+
+                # Store document with metadata using upload_document
+                success, result = await storage_service.upload_document(
+                    file_content=text_content,
+                    filename=f"{metadata['title']}.pdf",
+                    source_id=source_id,
+                    knowledge_type="technical",
+                    tags=tags,
+                    extract_code_examples=False,
+                )
+
+                if not success:
+                    logger.error(f"Failed to store document: {metadata['title']} - {result}")
+                    error_count += 1
+                    continue
+
+                processed_count += 1
+                progress = 15 + int((idx + 1) / len(standalone_papers) * 80)
+                await tracker.update(
+                    status="processing",
+                    progress=progress,
+                    log=f"Processed {processed_count}/{len(standalone_papers)} papers",
+                )
+
+            except Exception as e:
+                logger.error(f"Error processing item {metadata.get('title', 'unknown')}: {e}")
+                error_count += 1
+                continue
+
+        # Complete
+        await tracker.complete({
+            "processed": processed_count,
+            "errors": error_count,
+            "log": f"Sync complete: {processed_count} items imported, {error_count} errors",
+        })
+
+        logger.info(f"Zotero sync completed | progress_id={progress_id} | processed={processed_count} | errors={error_count}")
+
+    except Exception as e:
+        logger.error(f"Zotero sync failed | progress_id={progress_id} | error={str(e)}")
+        await tracker.error(
+            error_message=f"Sync failed: {str(e)}",
+        )
+
+
+@router.post("/knowledge-items/zotero/sync")
+async def sync_zotero_collection(request: ZoteroSyncRequest):
+    """
+    Sync a Zotero collection to the knowledge base.
+
+    Fetches items from collection, downloads PDFs, and processes them.
+    Collection name is added as a tag to all imported items.
+    Returns immediately with progress_id for tracking.
+    """
+    try:
+        safe_logfire_info(
+            f"Starting Zotero sync | collection={request.collection_name} | key={request.collection_key}"
+        )
+
+        # Create progress tracking ID
+        progress_id = str(uuid.uuid4())
+
+        # Start background task (credentials will be read from settings inside the task)
+        task = asyncio.create_task(
+            _process_zotero_sync(
+                progress_id=progress_id,
+                collection_key=request.collection_key,
+                collection_name=request.collection_name,
+            )
+        )
+
+        # Track the task (similar to crawl tasks)
+        active_crawl_tasks[progress_id] = task
+
+        return {
+            "success": True,
+            "progressId": progress_id,
+            "message": f"Started syncing collection '{request.collection_name}'",
+        }
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail={"error": str(e)})
+    except Exception as e:
+        safe_logfire_error(f"Failed to start Zotero sync | error={str(e)}")
         raise HTTPException(status_code=500, detail={"error": str(e)})

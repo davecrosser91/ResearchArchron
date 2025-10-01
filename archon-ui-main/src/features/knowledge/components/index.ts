@@ -5,3 +5,4 @@ export * from "./KnowledgeList";
 export * from "./KnowledgeTypeSelector";
 export * from "./LevelSelector";
 export * from "./TagInput";
+export * from "./ZoteroSyncDialog";

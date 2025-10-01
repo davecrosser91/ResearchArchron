@@ -3,7 +3,7 @@
  * Modal for crawling URLs or uploading documents
  */
 
-import { Globe, Loader2, Upload } from "lucide-react";
+import { BookMarked, Globe, Loader2, Upload } from "lucide-react";
 import { useId, useState } from "react";
 import { useToast } from "@/features/shared/hooks/useToast";
 import { Button, Input, Label } from "../../ui/primitives";
@@ -15,6 +15,7 @@ import type { CrawlRequest, UploadMetadata } from "../types";
 import { KnowledgeTypeSelector } from "./KnowledgeTypeSelector";
 import { LevelSelector } from "./LevelSelector";
 import { TagInput } from "./TagInput";
+import { ZoteroSyncDialog } from "./ZoteroSyncDialog";
 
 interface AddKnowledgeDialogProps {
   open: boolean;
@@ -29,7 +30,8 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
   onSuccess,
   onCrawlStarted,
 }) => {
-  const [activeTab, setActiveTab] = useState<"crawl" | "upload">("crawl");
+  const [activeTab, setActiveTab] = useState<"crawl" | "upload" | "zotero">("crawl");
+  const [zoteroDialogOpen, setZoteroDialogOpen] = useState(false);
   const { showToast } = useToast();
   const crawlMutation = useCrawlUrl();
   const uploadMutation = useUploadDocument();
@@ -133,9 +135,9 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
           <DialogDescription>Crawl websites or upload documents to expand your knowledge base.</DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "crawl" | "upload")}>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "crawl" | "upload" | "zotero")}>
           {/* Enhanced Tab Buttons */}
-          <div className="grid grid-cols-2 gap-3 p-2 rounded-xl backdrop-blur-md bg-gradient-to-b from-gray-100/30 via-gray-50/20 to-white/40 dark:from-gray-900/30 dark:via-gray-800/20 dark:to-black/40 border border-gray-200/40 dark:border-gray-700/40">
+          <div className="grid grid-cols-3 gap-3 p-2 rounded-xl backdrop-blur-md bg-gradient-to-b from-gray-100/30 via-gray-50/20 to-white/40 dark:from-gray-900/30 dark:via-gray-800/20 dark:to-black/40 border border-gray-200/40 dark:border-gray-700/40">
             {/* Crawl Website Tab */}
             <button
               type="button"
@@ -185,6 +187,35 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
               <div className="flex flex-col items-start gap-0.5">
                 <span className="font-semibold">Upload Document</span>
                 <span className="text-xs opacity-80">Add local files</span>
+              </div>
+            </button>
+
+            {/* Zotero Tab */}
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("zotero");
+                setZoteroDialogOpen(true);
+              }}
+              className={cn(
+                "relative flex items-center justify-center gap-3 px-6 py-4 rounded-lg transition-all duration-300",
+                "backdrop-blur-md border-2 font-medium text-sm",
+                activeTab === "zotero"
+                  ? "bg-gradient-to-b from-orange-100/70 via-orange-50/40 to-white/80 dark:from-orange-900/40 dark:via-orange-800/25 dark:to-black/50 border-orange-400/60 text-orange-700 dark:text-orange-300 shadow-[0_0_20px_rgba(251,146,60,0.25)]"
+                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-orange-300/50 hover:text-orange-600 dark:hover:text-orange-400 hover:shadow-[0_0_15px_rgba(251,146,60,0.15)]",
+              )}
+            >
+              {/* Top accent glow for active state */}
+              {activeTab === "zotero" && (
+                <div className="pointer-events-none absolute inset-x-0 top-0">
+                  <div className="mx-2 mt-0.5 h-[2px] rounded-full bg-orange-500" />
+                  <div className="-mt-1 h-8 w-full bg-gradient-to-b from-orange-500/30 to-transparent blur-md" />
+                </div>
+              )}
+              <BookMarked className={cn("w-5 h-5", activeTab === "zotero" ? "text-orange-500" : "text-current")} />
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-semibold">Sync Zotero</span>
+                <span className="text-xs opacity-80">Import papers</span>
               </div>
             </button>
           </div>
@@ -328,6 +359,24 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
             </Button>
           </TabsContent>
         </Tabs>
+
+        {/* Zotero Sync Dialog */}
+        <ZoteroSyncDialog
+          open={zoteroDialogOpen}
+          onOpenChange={(open) => {
+            setZoteroDialogOpen(open);
+            if (!open) {
+              setActiveTab("crawl");
+            }
+          }}
+          onSyncStarted={(progressId) => {
+            if (onCrawlStarted) {
+              onCrawlStarted(progressId);
+            }
+            onSuccess();
+            onOpenChange(false);
+          }}
+        />
       </DialogContent>
     </Dialog>
   );

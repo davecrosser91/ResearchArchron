@@ -205,9 +205,24 @@ export const knowledgeService = {
    * Search the knowledge base
    */
   async searchKnowledgeBase(options: SearchOptions): Promise<SearchResultsResponse> {
-    return callAPIWithETag<SearchResultsResponse>("/api/knowledge-items/search", {
+    const payload: {
+      query: string;
+      source?: string;
+      match_count?: number;
+      filter_metadata?: Record<string, any>;
+    } = {
+      query: options.query,
+      match_count: options.limit,
+      filter_metadata: options.filter_metadata,
+    };
+
+    if (options.sources && options.sources.length > 0) {
+      payload.source = options.sources[0];
+    }
+
+    return callAPIWithETag<SearchResultsResponse>("/api/rag/query", {
       method: "POST",
-      body: JSON.stringify(options),
+      body: JSON.stringify(payload),
     });
   },
 
@@ -216,5 +231,36 @@ export const knowledgeService = {
    */
   async getKnowledgeSources(): Promise<KnowledgeSource[]> {
     return callAPIWithETag<KnowledgeSource[]>("/api/knowledge-items/sources");
+  },
+
+  /**
+   * Get Zotero collections
+   */
+  async getZoteroCollections(): Promise<{
+    success: boolean;
+    collections: import("../types").ZoteroCollection[];
+    total: number;
+  }> {
+    return callAPIWithETag("/api/knowledge-items/zotero/collections", {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+  },
+
+  /**
+   * Sync Zotero collection to knowledge base
+   */
+  async syncZoteroCollection(request: {
+    collection_key: string;
+    collection_name: string;
+  }): Promise<{
+    success: boolean;
+    progressId: string;
+    message: string;
+  }> {
+    return callAPIWithETag("/api/knowledge-items/zotero/sync", {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
   },
 };

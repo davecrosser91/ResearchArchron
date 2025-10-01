@@ -19,6 +19,7 @@ import { useSettings } from "../contexts/SettingsContext";
 import { useStaggeredEntrance } from "../hooks/useStaggeredEntrance";
 import { FeaturesSection } from "../components/settings/FeaturesSection";
 import { APIKeysSection } from "../components/settings/APIKeysSection";
+import { ZoteroSection } from "../components/settings/ZoteroSection";
 import { RAGSettings } from "../components/settings/RAGSettings";
 import { CodeExtractionSettings } from "../components/settings/CodeExtractionSettings";
 import { IDEGlobalRules } from "../components/settings/IDEGlobalRules";
@@ -198,6 +199,9 @@ export const SettingsPage = () => {
             >
               <APIKeysSection />
             </CollapsibleSettingsCard>
+          </motion.div>
+          <motion.div variants={itemVariants}>
+            <ZoteroSection />
           </motion.div>
           <motion.div variants={itemVariants}>
             <CollapsibleSettingsCard

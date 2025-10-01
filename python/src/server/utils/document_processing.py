@@ -36,6 +36,28 @@ from ..config.logfire_config import get_logger, logfire
 logger = get_logger(__name__)
 
 
+def _clean_null_bytes(text: str) -> str:
+    """
+    Remove null bytes and other problematic Unicode characters that PostgreSQL rejects.
+
+    PostgreSQL doesn't allow \u0000 (null bytes) in text fields.
+    This is common in PDF extraction where binary data gets mixed with text.
+    """
+    if not text:
+        return text
+
+    # Remove null bytes and other control characters except newlines, tabs, and carriage returns
+    cleaned = text.replace('\x00', '')  # Remove null bytes
+
+    # Remove other problematic control characters but keep formatting
+    import re
+    # Keep: \n (newline), \r (carriage return), \t (tab)
+    # Remove: other control characters (0x00-0x1F except 0x09, 0x0A, 0x0D)
+    cleaned = re.sub(r'[\x01-\x08\x0B-\x0C\x0E-\x1F]', '', cleaned)
+
+    return cleaned
+
+
 def _preserve_code_blocks_across_pages(text: str) -> str:
     """
     Fix code blocks that were split across PDF page boundaries.
@@ -189,7 +211,8 @@ def extract_text_from_document(file_content: bytes, filename: str, content_type:
             html_text = file_content.decode("utf-8", errors="ignore").strip()
             if not html_text:
                 raise ValueError(f"The file {filename} appears to be empty.")
-            return _clean_html_to_text(html_text)
+            cleaned_html = _clean_html_to_text(html_text)
+            return _clean_null_bytes(cleaned_html)
 
         # Text files (markdown, txt, etc.)
         elif content_type.startswith("text/") or filename.lower().endswith((
@@ -202,7 +225,7 @@ def extract_text_from_document(file_content: bytes, filename: str, content_type:
             text = file_content.decode("utf-8", errors="ignore").strip()
             if not text:
                 raise ValueError(f"The file {filename} appears to be empty.")
-            return text
+            return _clean_null_bytes(text)
 
         else:
             raise ValueError(f"Unsupported file format: {content_type} ({filename})")
@@ -256,19 +279,21 @@ def extract_text_from_pdf(file_content: bytes) -> str:
                 combined_text = "\n\n".join(text_content)
                 logger.info(f"🔍 PDF DEBUG: Extracted {len(text_content)} pages, total length: {len(combined_text)}")
                 logger.info(f"🔍 PDF DEBUG: First 500 chars: {repr(combined_text[:500])}")
-                
+
                 # Check for backticks before and after processing
                 backtick_count_before = combined_text.count("```")
                 logger.info(f"🔍 PDF DEBUG: Backticks found before processing: {backtick_count_before}")
-                
+
                 processed_text = _preserve_code_blocks_across_pages(combined_text)
                 backtick_count_after = processed_text.count("```")
                 logger.info(f"🔍 PDF DEBUG: Backticks found after processing: {backtick_count_after}")
-                
+
                 if backtick_count_after > 0:
                     logger.info(f"🔍 PDF DEBUG: Sample after processing: {repr(processed_text[:1000])}")
-                
-                return processed_text
+
+                # Clean null bytes and problematic characters for PostgreSQL
+                cleaned_text = _clean_null_bytes(processed_text)
+                return cleaned_text
 
         except Exception as e:
             logfire.warning(f"pdfplumber extraction failed: {e}, trying PyPDF2")
@@ -290,7 +315,10 @@ def extract_text_from_pdf(file_content: bytes) -> str:
 
             if text_content:
                 combined_text = "\n\n".join(text_content)
-                return _preserve_code_blocks_across_pages(combined_text)
+                processed_text = _preserve_code_blocks_across_pages(combined_text)
+                # Clean null bytes for PostgreSQL
+                cleaned_text = _clean_null_bytes(processed_text)
+                return cleaned_text
             else:
                 raise ValueError(
                     "No text extracted from PDF: file may be empty, images-only, "
@@ -338,7 +366,9 @@ def extract_text_from_docx(file_content: bytes) -> str:
         if not text_content:
             raise ValueError("No text content found in document")
 
-        return "\n\n".join(text_content)
+        combined_text = "\n\n".join(text_content)
+        # Clean null bytes for PostgreSQL
+        return _clean_null_bytes(combined_text)
 
     except Exception as e:
         raise Exception("Failed to extract text from Word document") from e
