@@ -4,6 +4,7 @@
  */
 
 import { Check, Code, Copy, FileText, Layers } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "../../../ui/primitives";
 import type { InspectorSelectedItem } from "../../types";
 
@@ -105,11 +106,26 @@ export const ContentViewer: React.FC<ContentViewerProps> = ({ selectedItem, onCo
       {/* Content Body */}
       <div className="flex-1 overflow-y-auto min-h-0 p-6 scrollbar-thin">
         {selectedItem.type === "document" ? (
-          <div className="prose prose-invert max-w-none">
-            <pre className="whitespace-pre-wrap text-sm text-gray-300 font-sans leading-relaxed">
+          <article className="prose prose-lg dark:prose-invert max-w-none">
+            <ReactMarkdown
+              components={{
+                h1: ({ node, ...props }) => <h1 className="text-3xl font-bold text-cyan-400 mb-4" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-2xl font-bold text-cyan-400 mb-3" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-xl font-bold text-cyan-400 mb-2" {...props} />,
+                p: ({ node, ...props }) => <p className="text-gray-300 leading-relaxed mb-4" {...props} />,
+                code: ({ node, inline, ...props }) => (
+                  inline ?
+                    <code className="text-cyan-400 bg-gray-800 px-1 rounded" {...props} /> :
+                    <code className="block bg-gray-800 p-4 rounded" {...props} />
+                ),
+                ul: ({ node, ...props }) => <ul className="list-disc list-inside text-gray-300 mb-4" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal list-inside text-gray-300 mb-4" {...props} />,
+                li: ({ node, ...props }) => <li className="text-gray-300 mb-1" {...props} />,
+              }}
+            >
               {selectedItem.content || "No content available"}
-            </pre>
-          </div>
+            </ReactMarkdown>
+          </article>
         ) : (
           <div className="relative">
             <pre className="bg-black/30 border border-white/10 rounded-lg p-4 overflow-x-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
