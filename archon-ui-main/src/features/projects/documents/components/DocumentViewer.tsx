@@ -103,9 +103,23 @@ export const DocumentViewer = ({ document, projectId }: DocumentViewerProps) => 
 
     if (markdownText) {
       return (
-        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
-          <ReactMarkdown>{markdownText}</ReactMarkdown>
-        </div>
+        <article className="prose prose-lg dark:prose-invert max-w-none">
+          <ReactMarkdown
+            components={{
+              h1: ({ node, ...props }) => <h1 className="text-3xl font-bold text-cyan-500 dark:text-cyan-400 mb-4" {...props} />,
+              h2: ({ node, ...props }) => <h2 className="text-2xl font-bold text-cyan-500 dark:text-cyan-400 mb-3" {...props} />,
+              h3: ({ node, ...props }) => <h3 className="text-xl font-bold text-cyan-500 dark:text-cyan-400 mb-2" {...props} />,
+              p: ({ node, ...props }) => <p className="text-gray-900 dark:text-gray-100 leading-relaxed mb-4" {...props} />,
+              code: ({ node, inline, ...props }) => (
+                inline ?
+                  <code className="text-cyan-600 dark:text-cyan-400 bg-gray-100 dark:bg-gray-800 px-1 rounded" {...props} /> :
+                  <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded" {...props} />
+              ),
+            }}
+          >
+            {markdownText}
+          </ReactMarkdown>
+        </article>
       );
     }
 
