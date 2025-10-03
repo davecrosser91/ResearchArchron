@@ -1,9 +1,10 @@
-import { FileText, Search } from "lucide-react";
+import { FileText, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Input } from "../../ui/primitives";
+import { Button, Input } from "../../ui/primitives";
 import { cn } from "../../ui/primitives/styles";
 import { DocumentCard } from "./components/DocumentCard";
 import { DocumentViewer } from "./components/DocumentViewer";
+import { NewDocumentModal } from "./components/NewDocumentModal";
 import { useProjectDocuments } from "./hooks";
 import type { ProjectDocument } from "./types";
 
@@ -29,6 +30,7 @@ export const DocsTab = ({ project }: DocsTabProps) => {
   // Document state
   const [selectedDocument, setSelectedDocument] = useState<ProjectDocument | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isNewDocModalOpen, setIsNewDocModalOpen] = useState(false);
 
   // Auto-select first document when documents load
   useEffect(() => {
@@ -65,45 +67,47 @@ export const DocsTab = ({ project }: DocsTabProps) => {
         <div
           className={cn(
             "w-80 flex flex-col flex-shrink-0",
-            "border-r border-gray-300/50 dark:border-gray-700/70",
-            "bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950",
+            "border-r border-border",
+            "bg-background",
           )}
         >
           {/* Header */}
-          <div className="p-5 border-b border-gray-300/50 dark:border-gray-700/70 flex-shrink-0 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2.5 text-gray-900 dark:text-white">
-              <div className="p-1.5 bg-cyan-500/10 rounded-lg">
-                <FileText className="w-5 h-5 text-cyan-500" />
-              </div>
-              Documents
-            </h2>
+          <div className="p-4 border-b border-border flex-shrink-0">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-foreground">
+                <FileText className="w-4 h-4" />
+                Documents
+              </h2>
+              <Button onClick={() => setIsNewDocModalOpen(true)} size="sm" variant="cyan">
+                <Plus className="w-4 h-4 mr-1" />
+                New
+              </Button>
+            </div>
 
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search documents..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+                className="pl-9"
               />
             </div>
 
             {/* Info message */}
-            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-3">
+            <p className="text-xs text-muted-foreground mt-3">
               {filteredDocuments.length} of {documents.length} document{documents.length !== 1 ? "s" : ""}
             </p>
           </div>
 
           {/* Document List - Scrollable */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2.5 min-h-0">
+          <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-0">
             {filteredDocuments.length === 0 ? (
-              <div className="text-center py-16 text-gray-500 dark:text-gray-400">
-                <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-2xl w-fit mx-auto mb-4">
-                  <FileText className="w-12 h-12 opacity-40" />
-                </div>
-                <p className="text-sm font-medium">{searchQuery ? "No documents found" : "No documents in this project"}</p>
+              <div className="text-center py-16 text-muted-foreground">
+                <FileText className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                <p className="text-sm">{searchQuery ? "No documents found" : "No documents in this project"}</p>
               </div>
             ) : (
               filteredDocuments.map((doc) => (
@@ -120,14 +124,14 @@ export const DocsTab = ({ project }: DocsTabProps) => {
         </div>
 
         {/* Right Content - Document Viewer */}
-        <div className="flex-1 bg-white dark:bg-gray-900">
+        <div className="flex-1 bg-background">
           {selectedDocument ? (
-            <DocumentViewer document={selectedDocument} />
+            <DocumentViewer document={selectedDocument} projectId={projectId} />
           ) : (
             <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <FileText className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">
+              <div className="text-center text-muted-foreground">
+                <FileText className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p className="text-sm">
                   {documents.length > 0 ? "Select a document to view" : "No documents available"}
                 </p>
               </div>
@@ -135,6 +139,9 @@ export const DocsTab = ({ project }: DocsTabProps) => {
           )}
         </div>
       </div>
+
+      {/* New Document Modal */}
+      <NewDocumentModal projectId={projectId} open={isNewDocModalOpen} onOpenChange={setIsNewDocModalOpen} />
     </div>
   );
 };

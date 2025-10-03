@@ -165,7 +165,7 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
       initial="hidden"
       animate={isVisible ? "visible" : "hidden"}
       variants={containerVariants}
-      className={`max-w-full mx-auto ${className}`}
+      className={`w-full p-6 ${className}`}
       data-id={dataId}
     >
       <ProjectHeader onNewProject={() => setIsNewProjectModalOpen(true)} />
@@ -188,7 +188,7 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
           <Tabs defaultValue="tasks" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList>
               <TabsTrigger value="docs" className="py-3 font-mono transition-all duration-300" color="blue">
-                Docs
+                Documents
               </TabsTrigger>
               <TabsTrigger value="tasks" className="py-3 font-mono transition-all duration-300" color="orange">
                 Tasks

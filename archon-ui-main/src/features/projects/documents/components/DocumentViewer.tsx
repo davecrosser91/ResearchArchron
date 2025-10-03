@@ -1,16 +1,81 @@
-import { FileText } from "lucide-react";
+import { Edit2, FileText, Save, X } from "lucide-react";
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Button, TextArea } from "../../../ui/primitives";
 import { cn } from "../../../ui/primitives/styles";
+import { useUpdateDocument } from "../hooks";
 import type { ProjectDocument } from "../types";
 
 interface DocumentViewerProps {
   document: ProjectDocument;
+  projectId: string;
 }
 
 /**
- * Simple read-only document viewer
- * Displays document content in a reliable way without complex editing
+ * Document viewer with edit capability
+ * Displays document content and allows editing
  */
-export const DocumentViewer = ({ document }: DocumentViewerProps) => {
+export const DocumentViewer = ({ document, projectId }: DocumentViewerProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState("");
+  const updateDocumentMutation = useUpdateDocument();
+
+  const handleEditClick = () => {
+    // Extract current content as string for editing
+    let contentStr = "";
+    if (!document.content) {
+      contentStr = "";
+    } else if (typeof document.content === "string") {
+      contentStr = document.content;
+    } else if (typeof document.content === "object") {
+      // Check for markdown field
+      if ("markdown" in document.content && typeof document.content.markdown === "string") {
+        contentStr = document.content.markdown;
+      }
+      // Check for text field
+      else if ("text" in document.content && typeof document.content.text === "string") {
+        contentStr = document.content.text;
+      }
+      // Fallback to JSON stringify
+      else {
+        contentStr = JSON.stringify(document.content, null, 2);
+      }
+    }
+    setEditedContent(contentStr);
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    // Determine the content structure and update accordingly
+    let updatedContent: any;
+    if (typeof document.content === "string") {
+      updatedContent = editedContent;
+    } else if ("markdown" in document.content) {
+      updatedContent = { ...document.content, markdown: editedContent };
+    } else if ("text" in document.content) {
+      updatedContent = { ...document.content, text: editedContent };
+    } else {
+      updatedContent = { text: editedContent };
+    }
+
+    updateDocumentMutation.mutate(
+      {
+        projectId: projectId,
+        docId: document.id,
+        updates: { content: updatedContent },
+      },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      }
+    );
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setEditedContent("");
+  };
   // Extract content for display
   const renderContent = () => {
     if (!document.content) {
@@ -20,17 +85,17 @@ export const DocumentViewer = ({ document }: DocumentViewerProps) => {
     // Handle string content
     if (typeof document.content === "string") {
       return (
-        <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300">{document.content}</pre>
+        <div className="prose prose-base dark:prose-invert max-w-none prose-headings:text-cyan-600 dark:prose-headings:text-cyan-400 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-7 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900">
+          <ReactMarkdown>{document.content}</ReactMarkdown>
+        </div>
       );
     }
 
     // Handle markdown field
     if ("markdown" in document.content && typeof document.content.markdown === "string") {
       return (
-        <div className="prose prose-sm dark:prose-invert max-w-none">
-          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300">
-            {document.content.markdown}
-          </pre>
+        <div className="prose prose-base dark:prose-invert max-w-none prose-headings:text-cyan-600 dark:prose-headings:text-cyan-400 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-7 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900">
+          <ReactMarkdown>{document.content.markdown}</ReactMarkdown>
         </div>
       );
     }
@@ -38,9 +103,9 @@ export const DocumentViewer = ({ document }: DocumentViewerProps) => {
     // Handle text field
     if ("text" in document.content && typeof document.content.text === "string") {
       return (
-        <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300">
-          {document.content.text}
-        </pre>
+        <div className="prose prose-base dark:prose-invert max-w-none prose-headings:text-cyan-600 dark:prose-headings:text-cyan-400 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-7">
+          <ReactMarkdown>{document.content.text}</ReactMarkdown>
+        </div>
       );
     }
 
@@ -88,6 +153,36 @@ export const DocumentViewer = ({ document }: DocumentViewerProps) => {
               {new Date(document.updated_at).toLocaleDateString()}
             </p>
           </div>
+          <div className="flex gap-2">
+            {isEditing ? (
+              <>
+                <Button
+                  onClick={handleCancelClick}
+                  variant="outline"
+                  size="sm"
+                  disabled={updateDocumentMutation.isPending}
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveClick}
+                  variant="cyan"
+                  size="sm"
+                  loading={updateDocumentMutation.isPending}
+                  disabled={updateDocumentMutation.isPending}
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </Button>
+              </>
+            ) : (
+              <Button onClick={handleEditClick} variant="outline" size="sm">
+                <Edit2 className="w-4 h-4 mr-1" />
+                Edit
+              </Button>
+            )}
+          </div>
         </div>
         {document.tags && document.tags.length > 0 && (
           <div className="flex gap-2 mt-3">
@@ -109,7 +204,19 @@ export const DocumentViewer = ({ document }: DocumentViewerProps) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-6 bg-white dark:bg-gray-900">{renderContent()}</div>
+      <div className="flex-1 overflow-auto p-8 bg-white dark:bg-gray-950">
+        {isEditing ? (
+          <TextArea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            rows={30}
+            className="w-full h-full min-h-[600px] font-sans text-base leading-7"
+            placeholder="Enter document content..."
+          />
+        ) : (
+          renderContent()
+        )}
+      </div>
     </div>
   );
 };

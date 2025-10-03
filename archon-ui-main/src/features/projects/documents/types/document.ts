@@ -18,12 +18,28 @@ export type DocumentContent =
 
 export interface ProjectDocument {
   id: string;
+  project_id: string;
   title: string;
   content?: DocumentContent;
   document_type?: DocumentType | string;
   tags?: string[];
   updated_at: string;
   created_at?: string;
+}
+
+export interface UpdateDocumentRequest {
+  title?: string;
+  content?: DocumentContent;
+  tags?: string[];
+  author?: string;
+}
+
+export interface CreateDocumentRequest {
+  document_type: string;
+  title: string;
+  content?: DocumentContent;
+  tags?: string[];
+  author?: string;
 }
 
 export type DocumentType =
