@@ -86,29 +86,25 @@ export const DocumentViewer = ({ document, projectId }: DocumentViewerProps) => 
     console.log("Document content:", document.content);
     console.log("Content type:", typeof document.content);
 
-    // Handle string content
+    // Extract markdown content from various formats
+    let markdownText = "";
+
     if (typeof document.content === "string") {
-      return (
-        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
-          <ReactMarkdown>{document.content}</ReactMarkdown>
-        </div>
-      );
+      markdownText = document.content;
+    } else if (typeof document.content === "object" && document.content !== null) {
+      if ("markdown" in document.content && typeof document.content.markdown === "string") {
+        markdownText = document.content.markdown;
+      } else if ("text" in document.content && typeof document.content.text === "string") {
+        markdownText = document.content.text;
+      }
     }
 
-    // Handle markdown field
-    if ("markdown" in document.content && typeof document.content.markdown === "string") {
-      return (
-        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
-          <ReactMarkdown>{document.content.markdown}</ReactMarkdown>
-        </div>
-      );
-    }
+    console.log("Extracted markdown text:", markdownText);
 
-    // Handle text field
-    if ("text" in document.content && typeof document.content.text === "string") {
+    if (markdownText) {
       return (
         <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
-          <ReactMarkdown>{document.content.text}</ReactMarkdown>
+          <ReactMarkdown>{markdownText}</ReactMarkdown>
         </div>
       );
     }
