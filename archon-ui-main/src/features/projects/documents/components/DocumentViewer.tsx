@@ -82,10 +82,14 @@ export const DocumentViewer = ({ document, projectId }: DocumentViewerProps) => 
       return <p className="text-gray-500 italic">No content available</p>;
     }
 
+    // Debug: log the content structure
+    console.log("Document content:", document.content);
+    console.log("Content type:", typeof document.content);
+
     // Handle string content
     if (typeof document.content === "string") {
       return (
-        <div className="prose prose-base dark:prose-invert max-w-none prose-headings:text-cyan-600 dark:prose-headings:text-cyan-400 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-7 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900">
+        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
           <ReactMarkdown>{document.content}</ReactMarkdown>
         </div>
       );
@@ -94,7 +98,7 @@ export const DocumentViewer = ({ document, projectId }: DocumentViewerProps) => 
     // Handle markdown field
     if ("markdown" in document.content && typeof document.content.markdown === "string") {
       return (
-        <div className="prose prose-base dark:prose-invert max-w-none prose-headings:text-cyan-600 dark:prose-headings:text-cyan-400 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-7 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900">
+        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
           <ReactMarkdown>{document.content.markdown}</ReactMarkdown>
         </div>
       );
@@ -103,7 +107,7 @@ export const DocumentViewer = ({ document, projectId }: DocumentViewerProps) => 
     // Handle text field
     if ("text" in document.content && typeof document.content.text === "string") {
       return (
-        <div className="prose prose-base dark:prose-invert max-w-none prose-headings:text-cyan-600 dark:prose-headings:text-cyan-400 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-7">
+        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:text-cyan-500 dark:prose-headings:text-cyan-400 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-code:text-cyan-600 dark:prose-code:text-cyan-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800">
           <ReactMarkdown>{document.content.text}</ReactMarkdown>
         </div>
       );
