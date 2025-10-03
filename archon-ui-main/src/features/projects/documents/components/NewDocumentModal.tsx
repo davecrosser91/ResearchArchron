@@ -63,7 +63,7 @@ export const NewDocumentModal = ({ projectId, open, onOpenChange }: NewDocumentM
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Document</DialogTitle>
         </DialogHeader>
@@ -104,7 +104,7 @@ export const NewDocumentModal = ({ projectId, open, onOpenChange }: NewDocumentM
             <TextArea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              rows={15}
+              rows={20}
               placeholder="Enter document content in markdown format..."
               className="font-mono text-sm"
             />
