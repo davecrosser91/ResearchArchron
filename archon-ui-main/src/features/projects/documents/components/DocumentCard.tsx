@@ -99,74 +99,91 @@ export const DocumentCard = memo(({ document, isActive, onSelect, onDelete }: Do
         }
       }}
       className={`
-        relative flex-shrink-0 w-48 p-4 rounded-lg cursor-pointer
-        transition-all duration-200 group
+        relative w-full p-3.5 rounded-xl cursor-pointer
+        transition-all duration-300 group
         ${
           isActive
-            ? "bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 shadow-lg scale-105"
-            : "bg-white/50 dark:bg-black/30 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md"
+            ? "bg-gradient-to-br from-cyan-500/20 via-blue-500/15 to-purple-500/10 border-2 border-cyan-400/60 shadow-xl shadow-cyan-500/20 scale-[1.02]"
+            : "bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-800/80 dark:to-gray-900/50 border border-gray-300/30 dark:border-gray-700/50 hover:border-cyan-400/50 hover:shadow-lg hover:scale-[1.01]"
         }
       `}
       onClick={() => onSelect(document)}
       onMouseEnter={() => setShowDelete(true)}
       onMouseLeave={() => setShowDelete(false)}
     >
-      {/* Document Type Badge */}
-      <div
-        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium mb-2 border ${getTypeColor(
-          document.document_type as DocumentType,
-        )}`}
-      >
-        {getDocumentIcon(document.document_type as DocumentType)}
-        <span>{document.document_type || "document"}</span>
+      {/* Active Indicator Bar */}
+      {isActive && (
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-cyan-400 via-blue-500 to-purple-500 rounded-l-xl shadow-lg shadow-cyan-500/50" />
+      )}
+
+      {/* Top Row: Type Badge + Delete */}
+      <div className="flex items-center justify-between mb-3">
+        <div
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border shadow-sm ${getTypeColor(
+            document.document_type as DocumentType,
+          )}`}
+        >
+          {getDocumentIcon(document.document_type as DocumentType)}
+          <span className="capitalize tracking-wide">{document.document_type || "document"}</span>
+        </div>
+
+        {/* Delete Button */}
+        {showDelete && !isActive && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDelete}
+            className="p-1.5 h-auto min-h-0 text-red-500 dark:text-red-400 hover:bg-red-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+            aria-label={`Delete ${document.title}`}
+            title="Delete document"
+          >
+            <X className="w-4 h-4" aria-hidden="true" />
+          </Button>
+        )}
       </div>
 
       {/* Title */}
-      <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-2 mb-1">{document.title}</h4>
+      <h4 className={`font-bold text-sm leading-tight mb-3 line-clamp-2 ${
+        isActive ? "text-gray-900 dark:text-white" : "text-gray-800 dark:text-gray-100"
+      }`}>
+        {document.title}
+      </h4>
 
-      {/* Metadata */}
-      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-        {new Date(document.updated_at || document.created_at || Date.now()).toLocaleDateString()}
-      </p>
+      {/* Bottom Row: Date + Copy ID */}
+      <div className="flex items-center justify-between text-xs pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
+        <time className="text-gray-600 dark:text-gray-400 font-medium">
+          {new Date(document.updated_at || document.created_at || Date.now()).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </time>
 
-      {/* ID Display Section - Always visible for active, hover for others */}
-      <div
-        className={`flex items-center justify-between mt-2 ${
-          isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-        } transition-opacity duration-200`}
-      >
-        <span className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[120px]" title={document.id}>
-          {document.id.slice(0, 8)}...
-        </span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleCopyId}
-          className="p-1 h-auto min-h-0"
-          title="Copy Document ID to clipboard"
-          aria-label="Copy Document ID to clipboard"
+        {/* Copy ID Button - Show on active or hover */}
+        <div
+          className={`flex items-center gap-1.5 ${
+            isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          } transition-opacity duration-200`}
         >
-          {isCopied ? (
-            <span className="text-green-500 text-xs">✓</span>
-          ) : (
-            <Clipboard className="w-3 h-3" aria-hidden="true" />
-          )}
-        </Button>
+          <span className="text-gray-500 dark:text-gray-400 font-mono text-[10px]" title={document.id}>
+            {document.id.slice(0, 8)}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopyId}
+            className="p-1 h-auto min-h-0 hover:bg-cyan-500/20 rounded transition-colors"
+            title="Copy Document ID to clipboard"
+            aria-label="Copy Document ID to clipboard"
+          >
+            {isCopied ? (
+              <span className="text-green-500 text-xs font-bold">✓</span>
+            ) : (
+              <Clipboard className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+            )}
+          </Button>
+        </div>
       </div>
-
-      {/* Delete Button */}
-      {showDelete && !isActive && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleDelete}
-          className="absolute top-2 right-2 p-1 h-auto min-h-0 text-red-600 dark:text-red-400 hover:bg-red-500/20"
-          aria-label={`Delete ${document.title}`}
-          title="Delete document"
-        >
-          <X className="w-4 h-4" aria-hidden="true" />
-        </Button>
-      )}
     </div>
   );
 });
