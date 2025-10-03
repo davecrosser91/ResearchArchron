@@ -91,12 +91,12 @@ export const TaskEditModal = memo(
 
     return (
       <Dialog open={isModalOpen} onOpenChange={onOpenChange || ((open) => !open && onClose())}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-6xl">
           <DialogHeader>
             <DialogTitle>{editingTask?.id ? "Edit Task" : "New Task"}</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
+          <div className="space-y-2">
             <FormField>
               <Label required>Title</Label>
               <Input
@@ -111,7 +111,7 @@ export const TaskEditModal = memo(
               <TextArea
                 value={localTask?.description || ""}
                 onChange={(e) => handleDescriptionChange(e.target.value)}
-                rows={5}
+                rows={20}
                 placeholder="Enter task description"
               />
             </FormField>

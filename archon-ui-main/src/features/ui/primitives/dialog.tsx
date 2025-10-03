@@ -42,17 +42,14 @@ export const DialogContent = React.forwardRef<
       className={cn(
         "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
         "p-6 rounded-md backdrop-blur-md",
-        "w-full max-w-2xl",
+        "w-full",
         // Matching original glassmorphism
         "bg-gradient-to-b from-white/80 to-white/60 dark:from-white/10 dark:to-black/30",
         "border border-gray-200 dark:border-zinc-800/50",
-        "shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)]",
         // Top gradient bar (matching original)
         "before:content-[''] before:absolute before:top-0 before:left-0 before:right-0",
         "before:h-[2px] before:rounded-t-[4px]",
         "before:bg-gradient-to-r before:from-cyan-500 before:to-fuchsia-500",
-        "before:shadow-[0_0_10px_2px_rgba(34,211,238,0.4)]",
-        "dark:before:shadow-[0_0_20px_5px_rgba(34,211,238,0.7)]",
         // Top gradient glow (matching original)
         "after:content-[''] after:absolute after:top-0 after:left-0 after:right-0",
         "after:h-16 after:bg-gradient-to-b",
