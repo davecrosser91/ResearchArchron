@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'  # Triggers on tags like v1.0.0, v1.2.3, etc.
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 jobs:
   deploy:
@@ -13,22 +14,48 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to DigitalOcean
+      - name: Setup and Deploy to DigitalOcean
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /root/ResearchArchron || exit 1
+            # Create deployment directory if it doesn't exist
+            if [ ! -d "/root/ResearchArchron" ]; then
+              echo "🎉 First deployment - setting up repository..."
+              cd /root
+              git clone https://github.com/davecrosser91/ResearchArchron.git
+              cd ResearchArchron
 
-            echo "📥 Pulling latest changes..."
+              # Create .env file from secrets
+              cat > python/.env << 'EOF'
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            EOF
+
+              echo "✅ Initial setup complete!"
+            else
+              echo "📥 Updating existing deployment..."
+              cd /root/ResearchArchron
+            fi
+
+            # Pull latest changes
+            echo "📥 Fetching latest code..."
             git fetch --all --tags
-            git checkout ${{ github.ref_name }}
-            git pull origin ${{ github.ref_name }}
+            git checkout ${{ github.ref_name }} || git checkout main
+            git pull origin ${{ github.ref_name }} || git pull origin main
+
+            # Update .env file with latest secrets (in case they changed)
+            cat > python/.env << 'EOF'
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            EOF
 
             echo "🛑 Stopping services..."
-            docker compose down
+            docker compose down || true
 
             echo "🏗️ Building and starting services..."
             docker compose up -d --build
