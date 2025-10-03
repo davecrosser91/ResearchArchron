@@ -1,0 +1,70 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on tags like v1.0.0, v1.2.3, etc.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/ResearchArchron || exit 1
+
+            echo "📥 Pulling latest changes..."
+            git fetch --all --tags
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
+
+            echo "🛑 Stopping services..."
+            docker compose down
+
+            echo "🏗️ Building and starting services..."
+            docker compose up -d --build
+
+            echo "🧹 Cleaning up old images..."
+            docker image prune -af
+
+            echo "✅ Deployment complete!"
+            docker compose ps
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/ResearchArchron
+
+            echo "🔍 Checking service health..."
+            sleep 10
+
+            if docker compose ps | grep -q "Up"; then
+              echo "✅ Services are running"
+              docker compose ps
+            else
+              echo "❌ Services failed to start"
+              docker compose logs --tail=50
+              exit 1
+            fi
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment successful for tag ${{ github.ref_name }}"
+          else
+            echo "❌ Deployment failed for tag ${{ github.ref_name }}"
+          fi
