@@ -31,9 +31,11 @@ jobs:
               echo "📥 Updating existing deployment..."
               cd /root/ResearchArchron
 
-              # Stop containers BEFORE pulling to avoid file locks
-              echo "🛑 Stopping services..."
+              # Stop and remove ALL archon containers (even orphaned ones)
+              echo "🛑 Stopping all archon services..."
               docker compose down || true
+              docker stop archon-server archon-mcp archon-ui || true
+              docker rm archon-server archon-mcp archon-ui || true
             fi
 
             # Pull latest changes from main branch (force to override any local changes)
