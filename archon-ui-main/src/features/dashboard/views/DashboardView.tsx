@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import {
+	Archive,
 	BarChart3,
 	Book,
 	CheckCircle2,
@@ -13,11 +14,16 @@ import {
 	Pause,
 } from "lucide-react";
 import type React from "react";
+import { useState } from "react";
 import { useDashboardStats } from "../hooks/useDashboardQueries";
 import { StatCard } from "../components/StatCard";
+import { TaskCompletionChart } from "../components/TaskCompletionChart";
+import { useProjects } from "../../projects/hooks/useProjectQueries";
 
 export const DashboardView: React.FC = () => {
-	const { data: stats, isLoading } = useDashboardStats();
+	const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>(undefined);
+	const { data: stats, isLoading } = useDashboardStats(selectedProjectId);
+	const { data: projects } = useProjects();
 
 	const containerVariants = {
 		hidden: { opacity: 0 },
@@ -96,11 +102,26 @@ export const DashboardView: React.FC = () => {
 			{/* Tasks Stats (if projects enabled) */}
 			{stats.projects_enabled && (
 				<motion.div variants={itemVariants}>
-					<h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center gap-2">
-						<ListTodo className="w-5 h-5 text-cyan-500" />
-						Tasks
-					</h2>
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+					<div className="flex items-center justify-between mb-4">
+						<h2 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+							<ListTodo className="w-5 h-5 text-cyan-500" />
+							Tasks
+						</h2>
+						{/* Project Filter Dropdown */}
+						<select
+							value={selectedProjectId || ""}
+							onChange={(e) => setSelectedProjectId(e.target.value || undefined)}
+							className="px-4 py-2 rounded-lg bg-white/10 dark:bg-zinc-800/50 border border-gray-300/30 dark:border-zinc-700/50 text-gray-800 dark:text-white backdrop-blur-sm hover:bg-white/20 dark:hover:bg-zinc-800/70 transition-colors"
+						>
+							<option value="">All Projects</option>
+							{projects?.map((project) => (
+								<option key={project.id} value={project.id}>
+									{project.title}
+								</option>
+							))}
+						</select>
+					</div>
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
 						<StatCard
 							title="Backlog"
 							value={stats.tasks.todo}
@@ -129,14 +150,21 @@ export const DashboardView: React.FC = () => {
 							subtitle="Finished tasks"
 							iconColor="text-green-500"
 						/>
-					</div>
-					<div className="mt-4">
 						<StatCard
-							title="Total Tasks"
-							value={stats.tasks.total}
-							icon={BarChart3}
-							subtitle={`${stats.tasks.done} of ${stats.tasks.total} completed`}
-							iconColor="text-cyan-500"
+							title="Archived"
+							value={stats.tasks.archived}
+							icon={Archive}
+							subtitle="Deleted tasks"
+							iconColor="text-red-500"
+						/>
+					</div>
+
+					{/* Task Completion Chart */}
+					<div className="mt-6">
+						<TaskCompletionChart
+							completed={stats.tasks.done}
+							open={stats.tasks.todo + stats.tasks.doing + stats.tasks.review}
+							archived={stats.tasks.archived}
 						/>
 					</div>
 				</motion.div>

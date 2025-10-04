@@ -8,6 +8,7 @@ export interface DashboardStats {
 		doing: number;
 		review: number;
 		done: number;
+		archived: number;
 		total: number;
 	};
 	knowledge: {
