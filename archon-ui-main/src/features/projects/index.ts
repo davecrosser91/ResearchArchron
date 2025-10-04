@@ -20,3 +20,5 @@ export * from "./tasks";
 // Views
 export { ProjectsView } from "./views/ProjectsView";
 export { ProjectsViewWithBoundary } from "./views/ProjectsViewWithBoundary";
+export { ProjectDetailView } from "./views/ProjectDetailView";
+export { ProjectDetailViewWithBoundary } from "./views/ProjectDetailViewWithBoundary";

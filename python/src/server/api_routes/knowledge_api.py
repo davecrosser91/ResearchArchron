@@ -1556,6 +1556,17 @@ async def _process_zotero_sync(
                     logger.info(f"No PDF found for: {metadata['title']}")
                     continue
 
+                # Check if this document already exists in knowledge base
+                source_id = f"zotero_{metadata['key']}"
+                try:
+                    existing_check = get_supabase_client().table("documents").select("source_id").eq("source_id", source_id).limit(1).execute()
+                    if existing_check.data and len(existing_check.data) > 0:
+                        logger.info(f"Skipping {metadata['title'][:50]} - already exists in knowledge base")
+                        continue
+                except Exception as check_error:
+                    logger.warning(f"Could not check if document exists: {check_error}")
+                    # Continue with import if check fails
+
                 logger.info(f"Found PDF for {metadata['title']}, downloading...")
 
                 # Download first PDF attachment
@@ -1567,9 +1578,6 @@ async def _process_zotero_sync(
 
                 # Prepare tags: collection name + any existing Zotero tags
                 tags = [collection_name] + metadata.get("tags", [])
-
-                # Store in knowledge base
-                source_id = f"zotero_{metadata['key']}"
 
                 # Extract text from PDF
                 from ..utils.document_processing import extract_text_from_document

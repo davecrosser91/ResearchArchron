@@ -34,6 +34,16 @@ export function useProjects() {
   });
 }
 
+// Fetch single project by ID
+export function useProjectDetail(projectId: string | undefined) {
+  return useQuery<Project>({
+    queryKey: projectId ? projectKeys.detail(projectId) : DISABLED_QUERY_KEY,
+    queryFn: () => (projectId ? projectService.getProject(projectId) : Promise.reject("No project ID")),
+    enabled: !!projectId,
+    staleTime: STALE_TIMES.normal,
+  });
+}
+
 // Fetch project features
 export function useProjectFeatures(projectId: string | undefined) {
   return useQuery<Awaited<ReturnType<typeof projectService.getProjectFeatures>>>({

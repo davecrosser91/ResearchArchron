@@ -35,7 +35,7 @@ export const KnowledgeHeader: React.FC<KnowledgeHeaderProps> = ({
       <div className="flex items-center gap-4">
         {/* Left: Title */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          <BookOpen className="h-7 w-7 text-purple-500 filter drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
+          <BookOpen className="h-7 w-7" />
           <h1 className="text-2xl font-bold text-white">Knowledge Base</h1>
           <span className="px-3 py-1 text-sm bg-black/30 border border-white/10 rounded">
             {isLoading ? "Loading..." : `${totalItems} items`}

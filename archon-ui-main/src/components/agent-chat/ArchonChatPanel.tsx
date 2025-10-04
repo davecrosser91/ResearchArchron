@@ -259,7 +259,7 @@ export const ArchonChatPanel: React.FC<ArchonChatPanelProps> = props => {
             <div className="flex items-center">
               {/* Archon Logo - No animation in header */}
               <div className="relative w-8 h-8 mr-3 flex items-center justify-center">
-                <img src="/logo-neon.png" alt="Archon" className="w-6 h-6 z-10 relative" />
+                <img src="/re-light-master.png" alt="Archon" className="w-6 h-6 z-10 relative brightness-0 invert" />
               </div>
               <h2 className="text-gray-800 dark:text-white font-medium z-10 relative">
                 Knowledge Base Assistant
@@ -326,7 +326,7 @@ export const ArchonChatPanel: React.FC<ArchonChatPanelProps> = props => {
                 <div className="flex items-center mb-1">
                   {message.sender === 'agent' ? (
                     <div className="w-4 h-4 mr-1 flex items-center justify-center">
-                      <img src="/logo-neon.png" alt="Archon" className="w-full h-full" />
+                      <img src="/re-light-master.png" alt="Archon" className="w-full h-full brightness-0 invert" />
                     </div>
                   ) : (
                     <User className="w-4 h-4 text-purple-500 mr-1" />
@@ -370,7 +370,7 @@ export const ArchonChatPanel: React.FC<ArchonChatPanelProps> = props => {
               <div className="max-w-[80%] bg-blue-100/80 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 mr-auto rounded-lg p-3">
                 <div className="flex items-center mb-1">
                   <div className="w-4 h-4 mr-1 flex items-center justify-center">
-                    <img src="/logo-neon.png" alt="Archon" className="w-full h-full" />
+                    <img src="/re-light-master.png" alt="Archon" className="w-full h-full brightness-0 invert" />
                   </div>
                   <span className="text-xs text-gray-500 dark:text-zinc-400">
                     {formatTime(new Date())}
@@ -410,7 +410,7 @@ export const ArchonChatPanel: React.FC<ArchonChatPanelProps> = props => {
           
           <div className="flex items-center gap-2">
             {/* Text input field */}
-            <div className="flex-1 backdrop-blur-md bg-gradient-to-b from-white/80 to-white/60 dark:from-white/10 dark:to-black/30 border border-gray-200 dark:border-zinc-800/80 rounded-md px-3 py-2 focus-within:border-blue-500 focus-within:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-200">
+            <div className="flex-1 backdrop-blur-md bg-gradient-to-b from-white/80 to-white/60 dark:from-white/10 dark:to-black/30 border border-gray-200 dark:border-zinc-800/80 rounded-md px-3 py-2 focus-within:border-blue-500 transition-all duration-200">
               <input 
                 type="text" 
                 value={inputValue} 
@@ -438,7 +438,7 @@ export const ArchonChatPanel: React.FC<ArchonChatPanelProps> = props => {
               {/* Neon border glow */}
               <div className={`absolute inset-0 rounded-md border-2 border-blue-400 ${
                 isTyping || connectionStatus !== 'online' ? 'opacity-30' : 'opacity-60 group-hover:opacity-100'
-              } shadow-[0_0_10px_rgba(59,130,246,0.3),inset_0_0_6px_rgba(59,130,246,0.2)] dark:shadow-[0_0_10px_rgba(59,130,246,0.6),inset_0_0_6px_rgba(59,130,246,0.4)] transition-all duration-300`}></div>
+              } transition-all duration-300`}></div>
               {/* Inner glow effect */}
               <div className={`absolute inset-[1px] rounded-sm bg-blue-100/30 dark:bg-blue-500/10 ${
                 isTyping || connectionStatus !== 'online' ? 'opacity-20' : 'opacity-30 group-hover:opacity-40'
@@ -446,7 +446,7 @@ export const ArchonChatPanel: React.FC<ArchonChatPanelProps> = props => {
               {/* Send icon with neon glow */}
               <Send className={`w-4 h-4 text-blue-500 dark:text-blue-400 relative z-10 ${
                 isTyping || connectionStatus !== 'online' ? 'opacity-50' : 'opacity-90 group-hover:opacity-100'
-              } drop-shadow-[0_0_3px_rgba(59,130,246,0.5)] dark:drop-shadow-[0_0_3px_rgba(59,130,246,0.8)] transition-all duration-200`} />
+              } transition-all duration-200`} />
               {/* Shine effect */}
               <div className="absolute top-0 left-0 w-full h-[1px] bg-white/40 rounded-t-md"></div>
             </button>

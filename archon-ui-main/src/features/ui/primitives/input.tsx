@@ -16,10 +16,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className
         "text-gray-900 dark:text-white",
         "placeholder:text-gray-500 dark:placeholder:text-gray-400",
         "focus:outline-none focus:border-cyan-400",
-        "focus:shadow-[0_0_10px_rgba(34,211,238,0.2)]",
         "transition-all duration-300",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        error && "border-red-500 dark:border-red-400 focus:border-red-500 focus:shadow-[0_0_10px_rgba(239,68,68,0.2)]",
+        error && "border-red-500 dark:border-red-400 focus:border-red-500",
         className,
       )}
       ref={ref}
@@ -44,11 +43,10 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(({ 
         "text-gray-900 dark:text-white",
         "placeholder:text-gray-500 dark:placeholder:text-gray-400",
         "focus:outline-none focus:border-cyan-400",
-        "focus:shadow-[0_0_10px_rgba(34,211,238,0.2)]",
         "transition-all duration-300",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         "resize-y min-h-[80px]",
-        error && "border-red-500 dark:border-red-400 focus:border-red-500 focus:shadow-[0_0_10px_rgba(239,68,68,0.2)]",
+        error && "border-red-500 dark:border-red-400 focus:border-red-500",
         className,
       )}
       ref={ref}

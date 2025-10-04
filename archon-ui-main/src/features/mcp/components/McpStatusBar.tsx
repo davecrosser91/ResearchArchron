@@ -32,7 +32,7 @@ export const McpStatusBar: React.FC<McpStatusBarProps> = ({ status, sessionInfo,
 
   const getStatusColor = () => {
     if (status.status === "running") {
-      return "text-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]";
+      return "text-green-500";
     }
     return "text-red-500";
   };

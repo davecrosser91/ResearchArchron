@@ -115,17 +115,15 @@ const DraggableRow = ({
       ref={(node) => drag(drop(node))}
       className={cn(
         "group transition-all duration-200 cursor-move",
-        index % 2 === 0 ? "bg-white/50 dark:bg-black/50" : "bg-gray-50/80 dark:bg-gray-900/30",
-        "hover:bg-gradient-to-r hover:from-cyan-50/70 hover:to-purple-50/70",
-        "dark:hover:from-cyan-900/20 dark:hover:to-purple-900/20",
-        "border-b border-gray-200 dark:border-gray-800",
-        isDragging && "opacity-50 scale-105 shadow-lg",
-        isOver && "bg-cyan-100/50 dark:bg-cyan-900/20 border-cyan-400",
+        "hover:bg-muted/50",
+        "border-b border-border",
+        isDragging && "opacity-50",
+        isOver && "bg-primary/10",
       )}
     >
       {/* Priority/Order Indicator */}
       <td className="w-1 p-0">
-        <div className={cn("w-1 h-full", getOrderColor(task.task_order), getOrderGlow(task.task_order))} />
+        <div className="w-1 h-full bg-border" />
       </td>
 
       {/* Title */}
@@ -255,13 +253,13 @@ export const TableView = ({
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
+          <tr className="bg-muted border-b border-border">
             <th className="w-1"></th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Title</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-32">Status</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-40">Feature</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-36">Assignee</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-28">Actions</th>
+            <th className="px-4 py-3 text-left text-sm font-medium">Title</th>
+            <th className="px-4 py-3 text-left text-sm font-medium w-32">Status</th>
+            <th className="px-4 py-3 text-left text-sm font-medium w-40">Feature</th>
+            <th className="px-4 py-3 text-left text-sm font-medium w-36">Assignee</th>
+            <th className="px-4 py-3 text-left text-sm font-medium w-28">Actions</th>
           </tr>
         </thead>
         <tbody>

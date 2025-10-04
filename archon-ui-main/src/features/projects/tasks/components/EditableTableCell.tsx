@@ -170,8 +170,6 @@ export const EditableTableCell = ({
         <SelectTrigger
           className={cn(
             "w-full h-7 text-sm",
-            "border-cyan-400 dark:border-cyan-600",
-            "focus:ring-1 focus:ring-cyan-400",
             className,
           )}
           onKeyDown={handleKeyDown}
@@ -201,8 +199,6 @@ export const EditableTableCell = ({
       disabled={isSaving}
       className={cn(
         "h-7 text-sm",
-        "border-cyan-400 dark:border-cyan-600",
-        "focus:ring-1 focus:ring-cyan-400",
         className,
       )}
     />

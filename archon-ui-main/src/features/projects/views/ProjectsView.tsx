@@ -1,17 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useStaggeredEntrance } from "../../../hooks/useStaggeredEntrance";
 import { DeleteConfirmModal } from "../../ui/components/DeleteConfirmModal";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/primitives";
 import { NewProjectModal } from "../components/NewProjectModal";
 import { ProjectHeader } from "../components/ProjectHeader";
 import { ProjectList } from "../components/ProjectList";
-import { DocsTab } from "../documents/DocsTab";
 import { projectKeys, useDeleteProject, useProjects, useUpdateProject } from "../hooks/useProjectQueries";
 import { useTaskCounts } from "../tasks/hooks";
-import { TasksTab } from "../tasks/TasksTab";
 import type { Project } from "../types";
 
 interface ProjectsViewProps {
@@ -37,13 +34,10 @@ const itemVariants = {
 };
 
 export function ProjectsView({ className = "", "data-id": dataId }: ProjectsViewProps) {
-  const { projectId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // State management
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [activeTab, setActiveTab] = useState("tasks");
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<{
@@ -68,38 +62,13 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
     });
   }, [projects]);
 
-  // Handle project selection
+  // Handle project selection - navigate to detail page
   const handleProjectSelect = useCallback(
     (project: Project) => {
-      if (selectedProject?.id === project.id) return;
-
-      setSelectedProject(project);
-      setActiveTab("tasks");
-      navigate(`/projects/${project.id}`, { replace: true });
+      navigate(`/projects/${project.id}`);
     },
-    [selectedProject?.id, navigate],
+    [navigate],
   );
-
-  // Auto-select project based on URL or default to leftmost
-  useEffect(() => {
-    if (!sortedProjects.length) return;
-
-    // If there's a projectId in the URL, select that project
-    if (projectId) {
-      const project = sortedProjects.find((p) => p.id === projectId);
-      if (project) {
-        setSelectedProject(project);
-        return;
-      }
-    }
-
-    // Otherwise, select the first (leftmost) project
-    if (!selectedProject || !sortedProjects.find((p) => p.id === selectedProject.id)) {
-      const defaultProject = sortedProjects[0];
-      setSelectedProject(defaultProject);
-      navigate(`/projects/${defaultProject.id}`, { replace: true });
-    }
-  }, [sortedProjects, projectId, selectedProject, navigate]);
 
   // Refetch task counts when projects change
   useEffect(() => {
@@ -132,22 +101,8 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
 
     deleteProjectMutation.mutate(projectToDelete.id, {
       onSuccess: () => {
-        // Success toast handled by mutation
         setShowDeleteConfirm(false);
         setProjectToDelete(null);
-
-        // If we deleted the selected project, select another one
-        if (selectedProject?.id === projectToDelete.id) {
-          const remainingProjects = (projects as Project[]).filter((p) => p.id !== projectToDelete.id);
-          if (remainingProjects.length > 0) {
-            const nextProject = remainingProjects[0];
-            setSelectedProject(nextProject);
-            navigate(`/projects/${nextProject.id}`, { replace: true });
-          } else {
-            setSelectedProject(null);
-            navigate("/projects", { replace: true });
-          }
-        }
       },
     });
   };
@@ -158,7 +113,7 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
   };
 
   // Staggered entrance animation
-  const isVisible = useStaggeredEntrance([1, 2, 3], 0.15);
+  const isVisible = useStaggeredEntrance([1, 2], 0.15);
 
   return (
     <motion.div
@@ -172,7 +127,7 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
 
       <ProjectList
         projects={sortedProjects}
-        selectedProject={selectedProject}
+        selectedProject={null}
         taskCounts={taskCounts}
         isLoading={isLoadingProjects}
         error={projectsError as Error | null}
@@ -181,36 +136,6 @@ export function ProjectsView({ className = "", "data-id": dataId }: ProjectsView
         onDeleteProject={handleDeleteProject}
         onRetry={() => queryClient.invalidateQueries({ queryKey: projectKeys.lists() })}
       />
-
-      {/* Project Details Section */}
-      {selectedProject && (
-        <motion.div variants={itemVariants} className="relative">
-          <Tabs defaultValue="tasks" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList>
-              <TabsTrigger value="docs" className="py-3 font-mono transition-all duration-300" color="blue">
-                Documents
-              </TabsTrigger>
-              <TabsTrigger value="tasks" className="py-3 font-mono transition-all duration-300" color="orange">
-                Tasks
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Tab content */}
-            <div>
-              {activeTab === "docs" && (
-                <TabsContent value="docs" className="mt-0">
-                  <DocsTab project={selectedProject} />
-                </TabsContent>
-              )}
-              {activeTab === "tasks" && (
-                <TabsContent value="tasks" className="mt-0">
-                  <TasksTab projectId={selectedProject.id} />
-                </TabsContent>
-              )}
-            </div>
-          </Tabs>
-        </motion.div>
-      )}
 
       {/* Modals */}
       <NewProjectModal

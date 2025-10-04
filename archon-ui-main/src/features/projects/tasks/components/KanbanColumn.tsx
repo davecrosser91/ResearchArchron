@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { cn } from "../../../ui/primitives/styles";
 import type { Task } from "../types";
-import { getColumnColor, getColumnGlow, ItemTypes } from "../utils/task-styles";
+import { ItemTypes } from "../utils/task-styles";
 import { TaskCard } from "./TaskCard";
 
 interface KanbanColumnProps {
@@ -50,38 +50,24 @@ export const KanbanColumn = ({
     <div
       ref={ref}
       className={cn(
-        "flex flex-col h-full",
-        "bg-gradient-to-b from-white/20 to-transparent dark:from-black/30 dark:to-transparent",
-        "backdrop-blur-sm",
-        "transition-all duration-200",
-        isOver && "bg-gradient-to-b from-cyan-500/5 to-purple-500/5 dark:from-cyan-400/10 dark:to-purple-400/10",
-        isOver && "border-t-2 border-t-cyan-400/50 dark:border-t-cyan-400/70",
-        isOver &&
-          "shadow-[inset_0_2px_20px_rgba(34,211,238,0.15)] dark:shadow-[inset_0_2px_30px_rgba(34,211,238,0.25)]",
-        isOver && "backdrop-blur-md",
+        "flex flex-col h-full bg-background",
+        "transition-colors duration-200",
+        isOver && "bg-primary/5",
       )}
     >
-      {/* Column Header with Glassmorphism */}
-      <div
-        className={cn(
-          "text-center py-3 sticky top-0 z-10",
-          "bg-gradient-to-b from-white/80 to-white/60 dark:from-black/80 dark:to-black/60",
-          "backdrop-blur-md",
-          "border-b border-gray-200/50 dark:border-gray-700/50",
-          "relative",
-        )}
-      >
-        <h3 className={cn("font-mono text-sm font-medium", getColumnColor(status))}>{title}</h3>
-        {/* Column header glow effect */}
-        <div
-          className={cn("absolute bottom-0 left-[15%] right-[15%] w-[70%] mx-auto h-[1px]", getColumnGlow(status))}
-        />
+      {/* Column Header */}
+      <div className="sticky top-0 z-10 bg-muted/50 py-3 px-4 border-b-2 border-border">
+        <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+          {title}
+        </h3>
       </div>
 
       {/* Tasks Container */}
-      <div className="px-2 flex-1 overflow-y-auto space-y-2 py-3 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700">
+      <div className="flex-1 overflow-y-auto space-y-2 p-2 scrollbar-thin">
         {tasks.length === 0 ? (
-          <div className={cn("text-center py-8 text-gray-400 dark:text-gray-600 text-sm", "opacity-60")}>No tasks</div>
+          <div className="text-center py-8 text-muted-foreground text-xs">
+            No tasks
+          </div>
         ) : (
           tasks.map((task, index) => (
             <TaskCard

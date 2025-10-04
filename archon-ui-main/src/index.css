@@ -3,58 +3,50 @@
 @tailwind utilities;
 @layer base {
   :root {
-    /* Light mode variables */
-    --background: 0 0% 98%;
-    --foreground: 240 10% 3.9%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    /* Light mode variables - Minimal clean design */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --popover-foreground: 0 0% 10%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --primary: 271 91% 65%;
+    --card-foreground: 0 0% 10%;
+    --primary: 189 94% 43%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --accent: 271 91% 65%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --accent: 189 94% 43%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-    --purple-accent: 271 91% 65%;
-    --green-accent: 160 84% 39%;
-    --pink-accent: 330 90% 65%;
-    --blue-accent: 217 91% 60%;
+    --ring: 0 0% 20%;
+    --radius: 0.375rem;
   }
   .dark {
-    /* Dark mode variables */
+    /* Dark mode variables - Pure black minimal design */
     --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 100%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --card: 0 0% 0%;
-    --card-foreground: 0 0% 100%;
-    --primary: 271 91% 65%;
+    --foreground: 0 0% 98%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 60%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --primary: 189 94% 43%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
-    --accent: 271 91% 65%;
+    --accent: 189 94% 43%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --ring: 240 3.7% 15.9%;
-    --radius: 0.5rem;
-    --purple-accent: 271 91% 65%;
-    --green-accent: 160 84% 39%;
-    --pink-accent: 330 90% 65%;
-    --blue-accent: 217 91% 60%;
+    --ring: 0 0% 20%;
+    --radius: 0.375rem;
   }
 }
 @layer base {
@@ -67,146 +59,37 @@
   }
 }
 @layer components {
-  /* Grid pattern for background (actually used in MainLayout) */
-  .neon-grid {
-    background-image:
-      linear-gradient(to right, #a855f720 1px, transparent 1px),
-      linear-gradient(to bottom, #a855f720 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-  
-  .dark .neon-grid {
-    background-image:
-      linear-gradient(to right, #a855f730 1px, transparent 1px),
-      linear-gradient(to bottom, #a855f730 1px, transparent 1px);
-  }
+  /* Removed: neon-grid - using clean solid backgrounds instead */
 }
 
-/* Animation delays (checked for usage) */
-.animation-delay-150 {
-  animation-delay: 150ms;
-}
-.animation-delay-300 {
-  animation-delay: 300ms;
-}
+/* Removed: Glow animations and effects - using clean flat design */
 
-/* Pulse glow animation (used in GlassCrawlDepthSelector) */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow:
-      0 0 20px 10px hsl(var(--blue-accent) / 0.50),
-      0 0 40px 20px hsl(var(--blue-accent) / 0.30);
-  }
-  50% {
-    box-shadow:
-      0 0 30px 15px hsl(var(--blue-accent) / 0.70),
-      0 0 60px 30px hsl(var(--blue-accent) / 0.40);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-pulse-glow {
-    animation: none !important;
-  }
-}
-
-/* Custom scrollbar styles (used in multiple components) */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--blue-accent) / 0.30) transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--blue-accent) / 0.30);
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--blue-accent) / 0.50);
-}
-
-.dark .custom-scrollbar {
-  scrollbar-color: hsl(var(--blue-accent) / 0.45) transparent;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--blue-accent) / 0.40);
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--blue-accent) / 0.60);
-}
-
-/* Thin scrollbar styles (used in KanbanColumn and other components) - Tron-themed */
+/* Minimal scrollbar styles */
+.custom-scrollbar,
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--blue-accent) / 0.40) transparent;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
 }
 
+.custom-scrollbar::-webkit-scrollbar,
 .scrollbar-thin::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-track,
 .scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb,
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--blue-accent) / 0.60),
-    hsl(var(--blue-accent) / 0.30)
-  );
+  background-color: hsl(var(--muted-foreground) / 0.2);
   border-radius: 3px;
-  box-shadow: 0 0 3px hsl(var(--blue-accent) / 0.40);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--blue-accent) / 0.80),
-    hsl(var(--blue-accent) / 0.50)
-  );
-  box-shadow:
-    0 0 6px hsl(var(--blue-accent) / 0.60),
-    inset 0 0 3px hsl(var(--blue-accent) / 0.30);
-}
-
-.dark .scrollbar-thin {
-  scrollbar-color: hsl(var(--blue-accent) / 0.50) transparent;
-}
-
-.dark .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--blue-accent) / 0.50),
-    hsl(var(--blue-accent) / 0.20)
-  );
-  box-shadow: 0 0 4px hsl(var(--blue-accent) / 0.50);
-}
-
-.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--blue-accent) / 0.70),
-    hsl(var(--blue-accent) / 0.40)
-  );
-  box-shadow:
-    0 0 8px hsl(var(--blue-accent) / 0.70),
-    inset 0 0 3px hsl(var(--blue-accent) / 0.40);
+  background-color: hsl(var(--muted-foreground) / 0.3);
 }

@@ -22,8 +22,8 @@ export const SelectTrigger = React.forwardRef<
       "dark:from-white/10 dark:to-black/30",
       "border border-gray-200 dark:border-gray-700",
       "transition-all duration-200",
-      "hover:border-cyan-400/50 hover:shadow-[0_0_10px_rgba(34,211,238,0.2)]",
-      "focus:outline-none focus:border-cyan-500 focus:shadow-[0_0_15px_rgba(34,211,238,0.3)]",
+      "hover:border-cyan-400/50",
+      "focus:outline-none focus:border-cyan-500",
       "disabled:opacity-50 disabled:cursor-not-allowed",
       "data-[placeholder]:text-gray-500 dark:data-[placeholder]:text-gray-400",
       className,
@@ -54,9 +54,6 @@ export const SelectContent = React.forwardRef<
         "backdrop-blur-md bg-gradient-to-b from-white/80 to-white/60",
         "dark:from-white/10 dark:to-black/30",
         "border border-gray-200 dark:border-zinc-800/50",
-        // Tron shadow with subtle cyan glow
-        "shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)]",
-        "shadow-cyan-500/5 dark:shadow-cyan-500/10",
         // Text colors matching rest of app
         "text-gray-900 dark:text-gray-100",
         // Animation

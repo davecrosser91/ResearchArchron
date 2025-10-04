@@ -1,11 +1,15 @@
-import { ProjectsViewWithBoundary } from '../features/projects';
+import { useParams } from 'react-router-dom';
+import { ProjectsViewWithBoundary, ProjectDetailViewWithBoundary } from '../features/projects';
 
-// Minimal wrapper for routing compatibility
-// All implementation is in features/projects/views/ProjectsView.tsx
-// Uses ProjectsViewWithBoundary for proper error handling
+// Routes:
+// /projects - Shows project list
+// /projects/:projectId - Shows project detail with tasks/docs
 
-function ProjectPage(props: any) {
-  return <ProjectsViewWithBoundary {...props} />;
+function ProjectPage() {
+  const { projectId } = useParams<{ projectId: string }>();
+
+  // If projectId exists, show detail view, otherwise show list
+  return projectId ? <ProjectDetailViewWithBoundary /> : <ProjectsViewWithBoundary />;
 }
 
 export { ProjectPage };

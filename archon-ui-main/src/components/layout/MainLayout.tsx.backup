@@ -1,0 +1,164 @@
+import { AlertCircle, WifiOff } from "lucide-react";
+import type React from "react";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useToast } from "../../features/shared/hooks/useToast";
+import { cn } from "../../lib/utils";
+import { credentialsService } from "../../services/credentialsService";
+import { isLmConfigured } from "../../utils/onboarding";
+
+// TEMPORARY: Import from old components until they're migrated to features
+import { BackendStartupError } from "../BackendStartupError";
+import { useBackendHealth } from "./hooks/useBackendHealth";
+import { Navigation } from "./Navigation";
+
+interface MainLayoutProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface BackendStatusProps {
+  isHealthLoading: boolean;
+  isBackendError: boolean;
+  healthData: { ready: boolean } | undefined;
+}
+
+/**
+ * Backend health indicator component
+ */
+function BackendStatus({ isHealthLoading, isBackendError, healthData }: BackendStatusProps) {
+  if (isHealthLoading) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 text-sm">
+        <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+        <span>Connecting...</span>
+      </div>
+    );
+  }
+
+  if (isBackendError) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 text-sm">
+        <WifiOff className="w-4 h-4" />
+        <span>Backend Offline</span>
+      </div>
+    );
+  }
+
+  if (healthData?.ready === false) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 text-sm">
+        <AlertCircle className="w-4 h-4" />
+        <span>Backend Starting...</span>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Modern main layout using TanStack Query and Radix UI patterns
+ * Uses CSS Grid for layout instead of fixed positioning
+ */
+export function MainLayout({ children, className }: MainLayoutProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { showToast } = useToast();
+
+  // Backend health monitoring with TanStack Query
+  const {
+    data: healthData,
+    isError: isBackendError,
+    error: backendError,
+    isLoading: isHealthLoading,
+    failureCount,
+  } = useBackendHealth();
+
+  // Track if backend has completely failed (for showing BackendStartupError)
+  const backendStartupFailed = isBackendError && failureCount >= 5;
+
+  // TEMPORARY: Handle onboarding redirect using old logic until migrated
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      // Skip if backend failed to start
+      if (backendStartupFailed) {
+        return;
+      }
+
+      // Skip if not ready, already on onboarding, or already dismissed
+      if (!healthData?.ready || location.pathname === "/onboarding") {
+        return;
+      }
+
+      // Check if onboarding was already dismissed
+      if (localStorage.getItem("onboardingDismissed") === "true") {
+        return;
+      }
+
+      try {
+        // Fetch credentials in parallel (using old service temporarily)
+        const [ragCreds, apiKeyCreds] = await Promise.all([
+          credentialsService.getCredentialsByCategory("rag_strategy"),
+          credentialsService.getCredentialsByCategory("api_keys"),
+        ]);
+
+        // Check if LM is configured (using old utility temporarily)
+        const configured = isLmConfigured(ragCreds, apiKeyCreds);
+
+        if (!configured) {
+          // Redirect to onboarding
+          navigate("/onboarding", { replace: true });
+        }
+      } catch (error) {
+        // Log error but don't block app
+        console.error("ONBOARDING_CHECK_FAILED:", error);
+        showToast(`Configuration check failed. You can manually configure in Settings.`, "warning");
+      }
+    };
+
+    checkOnboarding();
+  }, [healthData?.ready, backendStartupFailed, location.pathname, navigate, showToast]);
+
+  // Show backend error toast (once)
+  useEffect(() => {
+    if (isBackendError && backendError) {
+      const errorMessage = backendError instanceof Error ? backendError.message : "Backend connection failed";
+      showToast(`Backend unavailable: ${errorMessage}. Some features may not work.`, "error");
+    }
+  }, [isBackendError, backendError, showToast]);
+
+  return (
+    <div className={cn("relative min-h-screen bg-background flex flex-col", className)}>
+      {/* TEMPORARY: Show backend startup error using old component */}
+      {backendStartupFailed && <BackendStartupError />}
+
+      {/* Top Navigation */}
+      <div className="sticky top-0 z-50 flex items-center justify-between">
+        <Navigation className="flex-1" />
+        <div className="px-4">
+          <BackendStatus isHealthLoading={isHealthLoading} isBackendError={isBackendError} healthData={healthData} />
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="relative flex-1 overflow-auto">
+        <div className="w-full px-4 py-4">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Layout variant without navigation for special pages
+ */
+export function MinimalLayout({ children, className }: MainLayoutProps) {
+  return (
+    <div className={cn("min-h-screen bg-white dark:bg-black", "flex items-center justify-center", className)}>
+      {/* Centered Content */}
+      <div className="relative w-full max-w-4xl px-6">{children}</div>
+    </div>
+  );
+}

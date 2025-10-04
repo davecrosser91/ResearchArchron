@@ -28,8 +28,8 @@ export const glassmorphism = {
     cyan: "border-cyan-300 dark:border-cyan-500/30",
     blue: "border-blue-300 dark:border-blue-500/30",
     purple: "border-purple-300 dark:border-purple-500/30",
-    focus: "focus:border-cyan-500 focus:shadow-[0_0_20px_5px_rgba(34,211,238,0.5)]",
-    hover: "hover:border-cyan-400/70 hover:shadow-[0_0_15px_rgba(34,211,238,0.4)]",
+    focus: "focus:border-cyan-500",
+    hover: "hover:border-cyan-400/70",
   },
 
   // Interactive states
@@ -55,18 +55,18 @@ export const glassmorphism = {
 
   // Shadow effects with Tron-style neon glow
   shadow: {
-    sm: "shadow-sm dark:shadow-md",
-    md: "shadow-md dark:shadow-lg",
-    lg: "shadow-lg dark:shadow-2xl",
-    elevated: "shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)]",
+    sm: "",
+    md: "",
+    lg: "",
+    elevated: "",
     // Neon glow effects matching Card.tsx
     glow: {
-      cyan: "shadow-[0_0_10px_2px_rgba(34,211,238,0.4)] dark:shadow-[0_0_20px_5px_rgba(34,211,238,0.7)]",
-      blue: "shadow-[0_0_10px_2px_rgba(59,130,246,0.4)] dark:shadow-[0_0_20px_5px_rgba(59,130,246,0.7)]",
-      purple: "shadow-[0_0_10px_2px_rgba(168,85,247,0.4)] dark:shadow-[0_0_20px_5px_rgba(168,85,247,0.7)]",
-      green: "shadow-[0_0_10px_2px_rgba(16,185,129,0.4)] dark:shadow-[0_0_20px_5px_rgba(16,185,129,0.7)]",
-      pink: "shadow-[0_0_10px_2px_rgba(236,72,153,0.4)] dark:shadow-[0_0_20px_5px_rgba(236,72,153,0.7)]",
-      orange: "shadow-[0_0_10px_2px_rgba(251,146,60,0.4)] dark:shadow-[0_0_20px_5px_rgba(251,146,60,0.7)]",
+      cyan: "",
+      blue: "",
+      purple: "",
+      green: "",
+      pink: "",
+      orange: "",
     },
   },
 
@@ -76,25 +76,25 @@ export const glassmorphism = {
       background: "bg-red-100/80 dark:bg-red-500/20",
       text: "text-red-600 dark:text-red-400",
       hover: "hover:bg-red-200 dark:hover:bg-red-500/30",
-      glow: "hover:shadow-[0_0_10px_rgba(239,68,68,0.3)]",
+      glow: "",
     },
     high: {
       background: "bg-orange-100/80 dark:bg-orange-500/20",
       text: "text-orange-600 dark:text-orange-400",
       hover: "hover:bg-orange-200 dark:hover:bg-orange-500/30",
-      glow: "hover:shadow-[0_0_10px_rgba(249,115,22,0.3)]",
+      glow: "",
     },
     medium: {
       background: "bg-blue-100/80 dark:bg-blue-500/20",
       text: "text-blue-600 dark:text-blue-400",
       hover: "hover:bg-blue-200 dark:hover:bg-blue-500/30",
-      glow: "hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]",
+      glow: "",
     },
     low: {
       background: "bg-gray-100/80 dark:bg-gray-500/20",
       text: "text-gray-600 dark:text-gray-400",
       hover: "hover:bg-gray-200 dark:hover:bg-gray-500/30",
-      glow: "hover:shadow-[0_0_10px_rgba(107,114,128,0.3)]",
+      glow: "",
     },
   },
 };

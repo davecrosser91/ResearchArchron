@@ -24,34 +24,6 @@
   background-position: center right;
   opacity: 0.2;
   z-index: 0;
-  filter: 
-    blur(1px)
-    drop-shadow(0 0 30px rgba(168, 85, 247, 0.8))
-    drop-shadow(0 0 60px rgba(59, 130, 246, 0.6))
-    drop-shadow(0 0 90px rgba(236, 72, 153, 0.4))
-    drop-shadow(0 0 120px rgba(16, 185, 129, 0.3));
-  animation: logoGlow 4s ease-in-out infinite alternate;
-}
-
-@keyframes logoGlow {
-  0% {
-    opacity: 0.15;
-    filter: 
-      blur(1px)
-      drop-shadow(0 0 20px rgba(168, 85, 247, 0.6))
-      drop-shadow(0 0 40px rgba(59, 130, 246, 0.4))
-      drop-shadow(0 0 60px rgba(236, 72, 153, 0.3))
-      drop-shadow(0 0 80px rgba(16, 185, 129, 0.2));
-  }
-  100% {
-    opacity: 0.25;
-    filter: 
-      blur(0.5px)
-      drop-shadow(0 0 40px rgba(168, 85, 247, 1.0))
-      drop-shadow(0 0 80px rgba(59, 130, 246, 0.8))
-      drop-shadow(0 0 120px rgba(236, 72, 153, 0.6))
-      drop-shadow(0 0 160px rgba(16, 185, 129, 0.4));
-  }
 }
 
 @media screen and (max-width: 966px) {
@@ -97,7 +69,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
+  background:
     linear-gradient(90deg, transparent 0%, rgba(139, 92, 246, 0.03) 50%, transparent 100%),
     linear-gradient(0deg, transparent 0%, rgba(16, 185, 129, 0.02) 50%, transparent 100%);
   pointer-events: none;
@@ -111,12 +83,10 @@
   color: #ffffff;
   font-size: 18px;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
   background: rgba(0, 0, 0, 0.3);
   padding: 8px 16px;
   border-radius: 8px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .features {
@@ -149,10 +119,9 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8);
   margin-bottom: 0 !important;
-  overflow: hidden; /* Ensures glows stay within border-radius */
+  overflow: hidden;
+  /* Ensures glows stay within border-radius */
 }
 
 .glassContainer::before {
@@ -162,10 +131,6 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #a855f7, #3b82f6, #ec4899, #10b981);
-  box-shadow: 
-    0 0 20px 4px rgba(168, 85, 247, 0.4),
-    inset 0 0 20px 2px rgba(168, 85, 247, 0.2);
   border-radius: 16px 16px 0 0;
 }
 
@@ -182,22 +147,19 @@
   z-index: 0;
 }
 
-.glassContainer > * {
+.glassContainer>* {
   position: relative;
   z-index: 1;
 }
 
 .glassContainer:hover {
   transform: translateY(-8px);
-  box-shadow: 
-    0 30px 70px rgba(168, 85, 247, 0.3),
-    0 0 40px rgba(168, 85, 247, 0.2);
-  border-color: rgba(168, 85, 247, 0.5);
+  border-color: rgba(238, 238, 238, 0.5);
 }
 
 .glassContainer h3 {
   color: #ffffff;
-  text-shadow: 0 0 15px rgba(168, 85, 247, 0.7);
+  text-shadow: 0 0 15px rgba(234, 233, 235, 0.7);
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0;
@@ -224,8 +186,7 @@
 }
 
 .featureIcon {
-  color: #a855f7;
-  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.6));
+  color: #f7f6f7;
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
@@ -240,8 +201,7 @@
 }
 
 .glassContainer:hover .featureIcon {
-  color: #c084fc;
-  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.8));
+  color: #525154;
   transform: scale(1.1);
 }
 
@@ -296,26 +256,23 @@
   justify-content: center;
   margin-bottom: 0.75rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
 .iconBox:hover {
   transform: scale(1.1);
-  box-shadow: 
-    0 20px 50px rgba(168, 85, 247, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.cursorIcon, .windsurfIcon, .vscodeIcon {
+.cursorIcon,
+.windsurfIcon,
+.vscodeIcon {
   font-size: 2.5rem;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
 
-.claudeIcon, .archonLogo {
+.claudeIcon,
+.archonLogo {
   width: 50px;
   height: 50px;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
@@ -346,16 +303,13 @@
 .connectionLine {
   flex: 1;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #a855f7 20%, #3b82f6 50%, #ec4899 80%, transparent 100%);
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
   animation: neonPulse 2s ease-in-out infinite alternate;
 }
 
 .connectionText {
-  color: #a855f7;
+  color: #e5e4e6;
   font-weight: 600;
   font-size: 0.9rem;
-  text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
   background: rgba(0, 0, 0, 0.8);
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -364,8 +318,13 @@
 }
 
 @keyframes neonPulse {
-  0% { opacity: 0.7; box-shadow: 0 0 5px rgba(168, 85, 247, 0.5); }
-  100% { opacity: 1; box-shadow: 0 0 20px rgba(168, 85, 247, 1); }
+  0% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Horizontal Connector for three-column layout */
@@ -379,20 +338,21 @@
 
 .connectionArrow {
   font-size: 2rem;
-  color: #a855f7;
-  text-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+  color: #e9e9e9;
+  text-shadow: 0 0 15px rgba(167, 166, 168, 0.8);
   animation: arrowPulse 2s ease-in-out infinite alternate;
 }
 
 @keyframes arrowPulse {
-  0% { 
-    color: #a855f7;
-    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+  0% {
+    color: #4f4954;
+    text-shadow: 0 0 10px rgba(237, 235, 239, 0.6);
     transform: scale(1);
   }
-  100% { 
-    color: #c084fc;
-    text-shadow: 0 0 20px rgba(168, 85, 247, 1);
+
+  100% {
+    color: #b7b7b7;
+    text-shadow: 0 0 20px rgb(199, 198, 200);
     transform: scale(1.1);
   }
 }
@@ -407,14 +367,12 @@
   border: 1px solid rgba(139, 92, 246, 0.5);
   border-radius: 12px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
   min-width: 100px;
   transition: all 0.3s ease;
 }
 
 .ideNode:hover {
-  border-color: rgba(139, 92, 246, 0.8);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+  border-color: rgba(208, 207, 211, 0.8);
   transform: translateY(-2px);
 }
 
@@ -449,10 +407,9 @@
   align-items: center;
   padding: 30px 25px;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.2));
-  border: 2px solid rgba(139, 92, 246, 0.6);
+  border: 2px solid rgba(220, 220, 220, 0.6);
   border-radius: 20px;
   backdrop-filter: blur(12px);
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
   min-width: 200px;
   min-height: 140px;
   position: relative;
@@ -471,8 +428,13 @@
 }
 
 @keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
+  }
 }
 
 .archonIcon {
@@ -503,7 +465,7 @@
   width: 24px;
   height: 24px;
   z-index: 10;
-  filter: drop-shadow(0 0 8px rgba(255, 212, 59, 0.8));
+  filter: drop-shadow(0 0 8px rgba(255, 254, 251, 0.8));
 }
 
 /* Knowledge Node Styling */
@@ -513,22 +475,20 @@
   align-items: center;
   padding: 12px;
   background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.5);
+  border: 1px solid rgba(192, 194, 193, 0.5);
   border-radius: 8px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
   min-width: 120px;
   transition: all 0.3s ease;
 }
 
 .knowledgeNode:hover {
-  border-color: rgba(16, 185, 129, 0.8);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+  border-color: rgba(224, 224, 226, 0.8);
   transform: translateY(-2px);
 }
 
 .knowledgeNode .nodeIconSvg {
-  color: #10b981;
+  color: #d7d7d7;
 }
 
 .intelligenceNode {
@@ -537,22 +497,20 @@
   align-items: center;
   padding: 12px;
   background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.5);
+  border: 1px solid rgba(239, 238, 236, 0.5);
   border-radius: 8px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
   min-width: 120px;
   transition: all 0.3s ease;
 }
 
 .intelligenceNode:hover {
-  border-color: rgba(245, 158, 11, 0.8);
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+  border-color: rgba(230, 229, 228, 0.8);
   transform: translateY(-2px);
 }
 
 .intelligenceNode .nodeIconSvg {
-  color: #f59e0b;
+  color: #edecea;
 }
 
 .knowledgeHeader {
@@ -564,7 +522,7 @@
 
 .knowledgeIcon {
   font-size: 2rem;
-  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
+  filter: drop-shadow(0 0 10px rgba(234, 235, 236, 0.6));
 }
 
 .knowledgeNode h4 {
@@ -596,13 +554,13 @@
 
 .featureItem:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(230, 231, 231, 0.3);
   color: #ffffff;
 }
 
 .featureIcon {
   font-size: 1rem;
-  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.4));
+  filter: drop-shadow(0 0 5px rgba(238, 238, 239, 0.4));
 }
 
 /* React Flow Edge Styling - SOLID GLOWING LINES */
@@ -621,6 +579,7 @@
   0% {
     filter: drop-shadow(0 0 8px currentColor);
   }
+
   100% {
     filter: drop-shadow(0 0 20px currentColor);
   }
@@ -631,17 +590,18 @@
   .flowContainer {
     height: 500px;
   }
-  
-  .ideNode, .knowledgeNode {
+
+  .ideNode,
+  .knowledgeNode {
     min-width: 100px;
     max-width: 200px;
   }
-  
+
   .archonNode {
     min-width: 150px;
     padding: 1.5rem;
   }
-  
+
   .knowledgeFeatures {
     grid-template-columns: 1fr;
   }
@@ -683,7 +643,10 @@
     margin: 0 auto;
   }
 
-  .architectureSection, .quickStart, .nextSteps, .callToAction {
+  .architectureSection,
+  .quickStart,
+  .nextSteps,
+  .callToAction {
     padding: 2.5rem 0;
   }
 
@@ -698,11 +661,14 @@
     border-radius: 12px;
   }
 
-  .cursorIcon, .windsurfIcon, .vscodeIcon {
+  .cursorIcon,
+  .windsurfIcon,
+  .vscodeIcon {
     font-size: 1.5rem;
   }
 
-  .claudeIcon, .archonLogo {
+  .claudeIcon,
+  .archonLogo {
     width: 25px;
     height: 25px;
   }
@@ -749,48 +715,42 @@
   flex-direction: column;
   padding: 16px;
   background: rgba(31, 41, 55, 0.8);
-  border: 1px solid rgba(139, 92, 246, 0.5);
+  border: 1px solid rgba(218, 217, 219, 0.5);
   border-radius: 12px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
   min-width: 200px;
   transition: all 0.3s ease;
 }
 
 .containerNode:hover {
-  border-color: rgba(139, 92, 246, 0.8);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+  border-color: rgba(191, 191, 192, 0.8);
   transform: translateY(-2px);
 }
 
 /* Knowledge Sources - Green */
 .containerNode[data-type="knowledge"] {
-  border-color: rgba(16, 185, 129, 0.6);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+  border-color: rgba(203, 206, 205, 0.6);
 }
 
 .containerNode[data-type="knowledge"]:hover {
-  border-color: rgba(16, 185, 129, 0.9);
-  box-shadow: 0 0 40px rgba(16, 185, 129, 0.5);
+  border-color: rgba(173, 173, 173, 0.9);
 }
 
 .containerNode[data-type="knowledge"] .containerTitle {
-  text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  text-shadow: 0 0 10px rgba(204, 206, 205, 0.6);
 }
 
 /* Project Intelligence - Orange */
 .containerNode[data-type="intelligence"] {
-  border-color: rgba(245, 158, 11, 0.6);
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+  border-color: rgba(239, 239, 239, 0.6);
 }
 
 .containerNode[data-type="intelligence"]:hover {
-  border-color: rgba(245, 158, 11, 0.9);
-  box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+  border-color: rgba(178, 178, 178, 0.9);
 }
 
 .containerNode[data-type="intelligence"] .containerTitle {
-  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+  text-shadow: 0 0 10px rgba(197, 197, 197, 0.6);
 }
 
 .containerTitle {
@@ -821,11 +781,11 @@
 
 .containerItem:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(242, 242, 242, 0.3);
 }
 
 .itemIcon {
-  color: #8b5cf6;
+  color: #c8c8c8;
   flex-shrink: 0;
 }
 
@@ -843,17 +803,14 @@
   align-items: center;
   padding: 20px;
   background: rgba(31, 41, 55, 0.9);
-  border: 1px solid rgba(59, 130, 246, 0.6);
   border-radius: 12px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
   min-width: 180px;
   transition: all 0.3s ease;
 }
 
 .uiControlNode:hover {
-  border-color: rgba(59, 130, 246, 0.8);
-  box-shadow: 0 0 35px rgba(59, 130, 246, 0.5);
+  border-color: rgba(217, 220, 224, 0.8);
   transform: translateY(-2px);
 }
 
@@ -862,7 +819,7 @@
   font-size: 1.3rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  text-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+  text-shadow: 0 0 15px rgba(199, 200, 201, 0.7);
   text-align: center;
 }
 
@@ -889,23 +846,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(139, 92, 246, 0.2);
-  border: 2px solid #8b5cf6;
+  background: rgba(216, 216, 216, 0.2);
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  box-shadow: 
-    0 0 20px rgba(139, 92, 246, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
 .mcpNode:hover {
   transform: scale(1.1);
-  box-shadow: 
-    0 0 30px rgba(139, 92, 246, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .mcpIcon {
@@ -919,23 +869,17 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 150, 136, 0.2);
-  border: 2px solid #009688;
+  border: 2px solid #c3c6c6;
   border-radius: 12px;
   padding: 8px 12px;
   min-width: 120px;
   height: 40px;
-  box-shadow: 
-    0 0 20px rgba(0, 150, 136, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
 .fastapiNode:hover {
   transform: scale(1.05);
-  box-shadow: 
-    0 0 30px rgba(0, 150, 136, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .fastapiIcon {
@@ -943,6 +887,3 @@
   width: auto;
   filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
 }
-
-
-

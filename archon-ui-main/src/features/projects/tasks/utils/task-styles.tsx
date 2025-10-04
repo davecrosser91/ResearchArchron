@@ -14,7 +14,7 @@ export const getAssigneeIcon = (assigneeName: Assignee) => {
     case "Coding Agent":
       return <Bot className="w-4 h-4 text-purple-400" />;
     case "Archon":
-      return <img src="/logo-neon.png" alt="Archon" className="w-4 h-4" />;
+      return <img src="/re-light-master.png" alt="Archon" className="w-4 h-4 brightness-0 invert" />;
     default:
       return <User className="w-4 h-4 text-blue-400" />;
   }
@@ -24,13 +24,13 @@ export const getAssigneeIcon = (assigneeName: Assignee) => {
 export const getAssigneeGlow = (assigneeName: Assignee) => {
   switch (assigneeName) {
     case "User":
-      return "shadow-[0_0_10px_rgba(59,130,246,0.4)]";
+      return "";
     case "Coding Agent":
-      return "shadow-[0_0_10px_rgba(168,85,247,0.4)]";
+      return "";
     case "Archon":
-      return "shadow-[0_0_10px_rgba(34,211,238,0.4)]";
+      return "";
     default:
-      return "shadow-[0_0_10px_rgba(59,130,246,0.4)]";
+      return "";
   }
 };
 
@@ -44,10 +44,10 @@ export const getOrderColor = (order: number) => {
 
 // Get glow effect based on task priority/order
 export const getOrderGlow = (order: number) => {
-  if (order <= 3) return "shadow-[0_0_10px_rgba(244,63,94,0.7)]";
-  if (order <= 6) return "shadow-[0_0_10px_rgba(249,115,22,0.7)]";
-  if (order <= 10) return "shadow-[0_0_10px_rgba(59,130,246,0.7)]";
-  return "shadow-[0_0_10px_rgba(16,185,129,0.7)]";
+  if (order <= 3) return "";
+  if (order <= 6) return "";
+  if (order <= 10) return "";
+  return "";
 };
 
 // Get column header color based on status
@@ -70,10 +70,10 @@ export const getColumnGlow = (status: "todo" | "doing" | "review" | "done") => {
     case "todo":
       return "bg-gray-500/30";
     case "doing":
-      return "bg-blue-500/30 shadow-[0_0_10px_2px_rgba(59,130,246,0.2)]";
+      return "bg-blue-500/30";
     case "review":
-      return "bg-purple-500/30 shadow-[0_0_10px_2px_rgba(168,85,247,0.2)]";
+      return "bg-purple-500/30";
     case "done":
-      return "bg-green-500/30 shadow-[0_0_10px_2px_rgba(16,185,129,0.2)]";
+      return "bg-green-500/30";
   }
 };

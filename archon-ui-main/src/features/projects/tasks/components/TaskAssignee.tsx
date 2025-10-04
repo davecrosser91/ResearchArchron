@@ -31,7 +31,7 @@ const getAssigneeIcon = (assigneeName: string, size: "sm" | "md" = "sm") => {
     return <User className={cn(sizeClass, "text-blue-400")} />;
   }
   if (assigneeName === "Archon") {
-    return <img src="/logo-neon.png" alt="Archon" className={sizeClass} />;
+    return <img src="/re-light-master.png" alt="Archon" className={`${sizeClass} brightness-0 invert`} />;
   }
   if (
     assigneeName === "Coding Agent" ||
@@ -55,15 +55,15 @@ const getAssigneeStyles = (assigneeName: string) => {
   // Known assignees get specific colors
   if (assigneeName === "User") {
     return {
-      glow: "shadow-[0_0_10px_rgba(59,130,246,0.4)]",
-      hoverGlow: "hover:shadow-[0_0_12px_rgba(59,130,246,0.5)]",
+      glow: "",
+      hoverGlow: "",
       color: "text-blue-600 dark:text-blue-400",
     };
   }
   if (assigneeName === "Archon") {
     return {
-      glow: "shadow-[0_0_10px_rgba(34,211,238,0.4)]",
-      hoverGlow: "hover:shadow-[0_0_12px_rgba(34,211,238,0.5)]",
+      glow: "",
+      hoverGlow: "",
       color: "text-cyan-600 dark:text-cyan-400",
     };
   }
@@ -73,16 +73,16 @@ const getAssigneeStyles = (assigneeName: string) => {
     assigneeName.toLowerCase().includes("ai")
   ) {
     return {
-      glow: "shadow-[0_0_10px_rgba(168,85,247,0.4)]",
-      hoverGlow: "hover:shadow-[0_0_12px_rgba(168,85,247,0.5)]",
+      glow: "",
+      hoverGlow: "",
       color: "text-purple-600 dark:text-purple-400",
     };
   }
 
   // Custom agents get a neutral glow
   return {
-    glow: "shadow-[0_0_10px_rgba(156,163,175,0.3)]",
-    hoverGlow: "hover:shadow-[0_0_12px_rgba(156,163,175,0.4)]",
+    glow: "",
+    hoverGlow: "",
     color: "text-gray-600 dark:text-gray-400",
   };
 };

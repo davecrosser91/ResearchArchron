@@ -28,7 +28,6 @@ export const TooltipContent = React.forwardRef<
         "dark:from-gray-900/95 dark:to-black/95",
         // Neon border with cyan glow
         "border border-cyan-500/50 dark:border-cyan-400/50",
-        "shadow-[0_0_15px_rgba(34,211,238,0.5)] dark:shadow-[0_0_15px_rgba(34,211,238,0.7)]",
         // Text colors - cyan in both modes for Tron effect
         "text-cyan-100 dark:text-cyan-100",
         // Subtle inner glow effect

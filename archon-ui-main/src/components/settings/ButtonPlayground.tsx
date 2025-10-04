@@ -125,7 +125,6 @@ export const ButtonPlayground: React.FC = () => {
   backdrop-filter: blur(8px);
   border-radius: ${layer1BorderRadius};
   ${layer1Border ? `border: 1px solid ${layer1Color === 'none' ? 'rgba(255,255,255,0.2)' : getColorConfig(layer1Color).border.split(' ')[1]};` : ''}
-  ${layer1Glow !== 'none' ? `box-shadow: 0 0 ${getGlowConfig(layer1Glow).blur}px ${getColorConfig(layer1Color).glow};` : ''}
 }
 
 .neon-button span {
@@ -170,7 +169,6 @@ export const ButtonPlayground: React.FC = () => {
   backdrop-filter: blur(4px);
   border-radius: ${layer2BorderRadius};
   ${layer2Border ? `border: 1px solid ${layer2Color === 'none' ? 'rgba(255,255,255,0.2)' : getColorConfig(layer2Color).border.split(' ')[1]};` : ''}
-  ${layer2Glow !== 'none' ? `box-shadow: 0 0 ${getGlowConfig(layer2Glow).blur}px ${getColorConfig(layer2Color).glow};` : ''}
   pointer-events: none;
 }`;
     }
@@ -340,8 +338,7 @@ export const ButtonPlayground: React.FC = () => {
         {/* Left Column - Preview and Controls */}
         <div className="relative rounded-xl backdrop-blur-md
           bg-gradient-to-b from-white/80 to-white/60 dark:from-white/10 dark:to-black/30
-          border border-gray-200 dark:border-zinc-800/50
-          shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)]">
+          border border-gray-200 dark:border-zinc-800/50">
           
           {/* Preview Section */}
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -653,14 +650,13 @@ export const ButtonPlayground: React.FC = () => {
         <div className="relative rounded-xl backdrop-blur-md
           bg-gradient-to-b from-white/80 to-white/60 dark:from-white/10 dark:to-black/30
           border border-gray-200 dark:border-zinc-800/50
-          shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)]
           h-full">
           
           <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white">CSS Styles</h3>
             <button
               onClick={handleCopyToClipboard}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-purple-600/25"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center gap-2"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               {copied ? 'Copied!' : 'Copy Styles'}

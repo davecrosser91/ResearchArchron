@@ -77,7 +77,7 @@ def register_rag_tools(mcp: FastMCP):
 
     @mcp.tool()
     async def rag_search_knowledge_base(
-        ctx: Context, query: str, source_id: str | None = None, match_count: int = 5
+        ctx: Context, query: str, source_id: str | None = None, tags: list[str] | None = None, match_count: int = 5
     ) -> str:
         """
         Search knowledge base for relevant content using RAG.
@@ -89,6 +89,8 @@ def register_rag_tools(mcp: FastMCP):
             source_id: Optional source ID filter from rag_get_available_sources().
                       This is the 'id' field from available sources, NOT a URL or domain name.
                       Example: "src_1234abcd" not "docs.anthropic.com"
+            tags: Optional list of tags to filter by. Documents must have ALL specified tags.
+                  Example: ["OCR Papers", "python"] to find Python documents in the OCR Papers collection
             match_count: Max results (default: 5)
 
         Returns:
@@ -106,6 +108,8 @@ def register_rag_tools(mcp: FastMCP):
                 request_data = {"query": query, "match_count": match_count}
                 if source_id:
                     request_data["source"] = source_id
+                if tags:
+                    request_data["filter_metadata"] = {"tags": tags}
 
                 response = await client.post(urljoin(api_url, "/api/rag/query"), json=request_data)
 
@@ -137,7 +141,7 @@ def register_rag_tools(mcp: FastMCP):
 
     @mcp.tool()
     async def rag_search_code_examples(
-        ctx: Context, query: str, source_id: str | None = None, match_count: int = 5
+        ctx: Context, query: str, source_id: str | None = None, tags: list[str] | None = None, match_count: int = 5
     ) -> str:
         """
         Search for relevant code examples in the knowledge base.
@@ -149,6 +153,8 @@ def register_rag_tools(mcp: FastMCP):
             source_id: Optional source ID filter from rag_get_available_sources().
                       This is the 'id' field from available sources, NOT a URL or domain name.
                       Example: "src_1234abcd" not "docs.anthropic.com"
+            tags: Optional list of tags to filter by. Documents must have ALL specified tags.
+                  Example: ["OCR Papers", "python"] to find Python code in the OCR Papers collection
             match_count: Max results (default: 5)
 
         Returns:
@@ -166,6 +172,8 @@ def register_rag_tools(mcp: FastMCP):
                 request_data = {"query": query, "match_count": match_count}
                 if source_id:
                     request_data["source"] = source_id
+                if tags:
+                    request_data["filter_metadata"] = {"tags": tags}
 
                 # Call the dedicated code examples endpoint
                 response = await client.post(

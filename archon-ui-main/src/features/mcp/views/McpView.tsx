@@ -76,7 +76,6 @@ export const McpView: React.FC = () => {
           width="28"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
-          className="text-pink-500 filter drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]"
           aria-label="MCP icon"
         >
           <title>MCP icon</title>

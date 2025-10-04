@@ -232,89 +232,44 @@ const ViewControls = ({ viewMode, onViewChange, onAddTask }: ViewControlsProps) 
   return (
     <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 pointer-events-none">
       <div className="flex items-center gap-4">
-        {/* Add Task Button with Glassmorphism */}
+        {/* Add Task Button */}
         <Button
           onClick={onAddTask}
           variant="outline"
-          className={cn(
-            "pointer-events-auto relative",
-            glassmorphism.background.subtle,
-            glassmorphism.border.default,
-            glassmorphism.shadow.elevated,
-            "text-cyan-600 dark:text-cyan-400",
-            "hover:text-cyan-700 dark:hover:text-cyan-300",
-            "transition-all duration-300",
-          )}
+          className="pointer-events-auto"
         >
           <Plus className="w-4 h-4 mr-2" />
           <span>Add Task</span>
-          {/* Glow effect */}
-          <span
-            className={cn(
-              "absolute bottom-0 left-0 right-0 h-[2px]",
-              "bg-gradient-to-r from-transparent via-cyan-500 to-transparent",
-              "shadow-[0_0_10px_2px_rgba(34,211,238,0.4)]",
-              "dark:shadow-[0_0_20px_5px_rgba(34,211,238,0.7)]",
-            )}
-          />
         </Button>
 
-        {/* View Toggle Controls with Glassmorphism */}
-        <div
-          className={cn(
-            "flex items-center overflow-hidden pointer-events-auto",
-            glassmorphism.background.subtle,
-            glassmorphism.border.default,
-            glassmorphism.shadow.elevated,
-            "rounded-lg",
-          )}
-        >
+        {/* View Toggle Controls */}
+        <div className="flex items-center overflow-hidden pointer-events-auto bg-card border border-border rounded-lg">
           <button
             type="button"
             onClick={() => onViewChange("table")}
             className={cn(
-              "px-5 py-2.5 flex items-center gap-2 relative transition-all duration-300",
+              "px-5 py-2.5 flex items-center gap-2 relative transition-all duration-200",
               viewMode === "table"
-                ? "text-cyan-600 dark:text-cyan-400"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300",
+                ? "text-primary bg-muted"
+                : "text-muted-foreground hover:bg-muted/50",
             )}
           >
             <Table className="w-4 h-4" />
             <span>Table</span>
-            {viewMode === "table" && (
-              <span
-                className={cn(
-                  "absolute bottom-0 left-[15%] right-[15%] w-[70%] mx-auto h-[2px]",
-                  "bg-cyan-500",
-                  "shadow-[0_0_10px_2px_rgba(34,211,238,0.4)]",
-                  "dark:shadow-[0_0_20px_5px_rgba(34,211,238,0.7)]",
-                )}
-              />
-            )}
           </button>
-          <div className="w-px h-6 bg-gray-300 dark:bg-gray-700" />
+          <div className="w-px h-6 bg-border" />
           <button
             type="button"
             onClick={() => onViewChange("board")}
             className={cn(
-              "px-5 py-2.5 flex items-center gap-2 relative transition-all duration-300",
+              "px-5 py-2.5 flex items-center gap-2 relative transition-all duration-200",
               viewMode === "board"
-                ? "text-purple-600 dark:text-purple-400"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300",
+                ? "text-primary bg-muted"
+                : "text-muted-foreground hover:bg-muted/50",
             )}
           >
             <LayoutGrid className="w-4 h-4" />
             <span>Board</span>
-            {viewMode === "board" && (
-              <span
-                className={cn(
-                  "absolute bottom-0 left-[15%] right-[15%] w-[70%] mx-auto h-[2px]",
-                  "bg-purple-500",
-                  "shadow-[0_0_10px_2px_rgba(168,85,247,0.4)]",
-                  "dark:shadow-[0_0_20px_5px_rgba(168,85,247,0.7)]",
-                )}
-              />
-            )}
           </button>
         </div>
       </div>

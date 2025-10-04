@@ -38,13 +38,13 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({ onNewProject }) =>
         variants={titleVariants}
       >
         <img
-          src="/logo-neon.png"
+          src="/re-light-master.png"
           alt="Projects"
-          className="w-7 h-7 filter drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]"
+          className="w-7 h-7 filter"
         />
         Projects
       </motion.h1>
-      <Button onClick={onNewProject} variant="cyan" className="shadow-lg shadow-cyan-500/20">
+      <Button onClick={onNewProject} variant="cyan" className="">
         <Plus className="w-4 h-4 mr-2" />
         New Project
       </Button>

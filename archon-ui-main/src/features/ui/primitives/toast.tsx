@@ -37,17 +37,14 @@ export const Toast = React.forwardRef<
     success: cn(
       "backdrop-blur-md bg-gradient-to-b from-green-100/80 dark:from-green-500/20 to-white/60 dark:to-green-500/5",
       "border-green-300 dark:border-green-500/30",
-      "shadow-[0_0_10px_2px_rgba(16,185,129,0.4)] dark:shadow-[0_0_20px_5px_rgba(16,185,129,0.7)]",
     ),
     error: cn(
       "backdrop-blur-md bg-gradient-to-b from-red-100/80 dark:from-red-500/20 to-white/60 dark:to-red-500/5",
       "border-red-300 dark:border-red-500/30",
-      "shadow-[0_0_10px_2px_rgba(239,68,68,0.4)] dark:shadow-[0_0_20px_5px_rgba(239,68,68,0.7)]",
     ),
     warning: cn(
       "backdrop-blur-md bg-gradient-to-b from-orange-100/80 dark:from-orange-500/20 to-white/60 dark:to-orange-500/5",
       "border-orange-300 dark:border-orange-500/30",
-      "shadow-[0_0_10px_2px_rgba(251,146,60,0.4)] dark:shadow-[0_0_20px_5px_rgba(251,146,60,0.7)]",
     ),
   };
 

@@ -146,8 +146,8 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
                 "relative flex items-center justify-center gap-3 px-6 py-4 rounded-lg transition-all duration-300",
                 "backdrop-blur-md border-2 font-medium text-sm",
                 activeTab === "crawl"
-                  ? "bg-gradient-to-b from-cyan-100/70 via-cyan-50/40 to-white/80 dark:from-cyan-900/40 dark:via-cyan-800/25 dark:to-black/50 border-cyan-400/60 text-cyan-700 dark:text-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.25)]"
-                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-cyan-300/50 hover:text-cyan-600 dark:hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.15)]",
+                  ? "bg-gradient-to-b from-cyan-100/70 via-cyan-50/40 to-white/80 dark:from-cyan-900/40 dark:via-cyan-800/25 dark:to-black/50 border-cyan-400/60 text-cyan-700 dark:text-cyan-300"
+                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-cyan-300/50 hover:text-cyan-600 dark:hover:text-cyan-400",
               )}
             >
               {/* Top accent glow for active state */}
@@ -172,8 +172,8 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
                 "relative flex items-center justify-center gap-3 px-6 py-4 rounded-lg transition-all duration-300",
                 "backdrop-blur-md border-2 font-medium text-sm",
                 activeTab === "upload"
-                  ? "bg-gradient-to-b from-purple-100/70 via-purple-50/40 to-white/80 dark:from-purple-900/40 dark:via-purple-800/25 dark:to-black/50 border-purple-400/60 text-purple-700 dark:text-purple-300 shadow-[0_0_20px_rgba(147,51,234,0.25)]"
-                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-purple-300/50 hover:text-purple-600 dark:hover:text-purple-400 hover:shadow-[0_0_15px_rgba(147,51,234,0.15)]",
+                  ? "bg-gradient-to-b from-purple-100/70 via-purple-50/40 to-white/80 dark:from-purple-900/40 dark:via-purple-800/25 dark:to-black/50 border-purple-400/60 text-purple-700 dark:text-purple-300"
+                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-purple-300/50 hover:text-purple-600 dark:hover:text-purple-400",
               )}
             >
               {/* Top accent glow for active state */}
@@ -201,8 +201,8 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
                 "relative flex items-center justify-center gap-3 px-6 py-4 rounded-lg transition-all duration-300",
                 "backdrop-blur-md border-2 font-medium text-sm",
                 activeTab === "zotero"
-                  ? "bg-gradient-to-b from-orange-100/70 via-orange-50/40 to-white/80 dark:from-orange-900/40 dark:via-orange-800/25 dark:to-black/50 border-orange-400/60 text-orange-700 dark:text-orange-300 shadow-[0_0_20px_rgba(251,146,60,0.25)]"
-                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-orange-300/50 hover:text-orange-600 dark:hover:text-orange-400 hover:shadow-[0_0_15px_rgba(251,146,60,0.15)]",
+                  ? "bg-gradient-to-b from-orange-100/70 via-orange-50/40 to-white/80 dark:from-orange-900/40 dark:via-orange-800/25 dark:to-black/50 border-orange-400/60 text-orange-700 dark:text-orange-300"
+                  : "bg-gradient-to-b from-white/40 via-white/30 to-white/60 dark:from-gray-800/40 dark:via-gray-800/30 dark:to-black/60 border-gray-300/40 dark:border-gray-600/40 text-gray-600 dark:text-gray-300 hover:border-orange-300/50 hover:text-orange-600 dark:hover:text-orange-400",
               )}
             >
               {/* Top accent glow for active state */}
@@ -238,7 +238,7 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
                   value={crawlUrl}
                   onChange={(e) => setCrawlUrl(e.target.value)}
                   disabled={isProcessing}
-                  className="pl-10 h-12 backdrop-blur-md bg-gradient-to-r from-white/60 to-white/50 dark:from-black/60 dark:to-black/50 border-gray-300/60 dark:border-gray-600/60 focus:border-cyan-400/70 focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                  className="pl-10 h-12 backdrop-blur-md bg-gradient-to-r from-white/60 to-white/50 dark:from-black/60 dark:to-black/50 border-gray-300/60 dark:border-gray-600/60 focus:border-cyan-400/70"
                 />
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -262,7 +262,7 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
             <Button
               onClick={handleCrawl}
               disabled={isProcessing || !crawlUrl}
-              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 backdrop-blur-md border border-cyan-400/50 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.35)] transition-all duration-200"
+              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 backdrop-blur-md border border-cyan-400/50 transition-all duration-200"
             >
               {crawlMutation.isPending ? (
                 <>
@@ -343,7 +343,7 @@ export const AddKnowledgeDialog: React.FC<AddKnowledgeDialogProps> = ({
             <Button
               onClick={handleUpload}
               disabled={isProcessing || !selectedFile}
-              className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 backdrop-blur-md border border-purple-400/50 shadow-[0_0_20px_rgba(147,51,234,0.25)] hover:shadow-[0_0_30px_rgba(147,51,234,0.35)] transition-all duration-200"
+              className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 backdrop-blur-md border border-purple-400/50 transition-all duration-200"
             >
               {uploadMutation.isPending ? (
                 <>
