@@ -1,4 +1,4 @@
-import { BookOpen, ChevronLeft, ChevronRight, FolderKanban, LayoutGrid, Settings } from "lucide-react";
+import { BarChart3, BookOpen, ChevronLeft, ChevronRight, FolderKanban, LayoutGrid, Settings } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSettings } from "../../contexts/SettingsContext";
@@ -19,16 +19,22 @@ export function Sidebar() {
 
   const navigation: NavItem[] = [
     {
+      name: "Dashboard",
+      href: "/",
+      icon: BarChart3,
+      enabled: true,
+    },
+    {
+      name: "Knowledge",
+      href: "/knowledge",
+      icon: BookOpen,
+      enabled: true,
+    },
+    {
       name: "Projects",
       href: "/projects",
       icon: FolderKanban,
       enabled: projectsEnabled,
-    },
-    {
-      name: "Knowledge",
-      href: "/",
-      icon: BookOpen,
-      enabled: true,
     },
     {
       name: "MCP",

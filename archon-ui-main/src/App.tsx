@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from './features/shared/config/queryClient';
+import { DashboardPage } from './pages/DashboardPage';
 import { KnowledgeBasePage } from './pages/KnowledgeBasePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { MCPPage } from './pages/MCPPage';
@@ -22,10 +23,11 @@ import { useMigrationStatus } from './hooks/useMigrationStatus';
 
 const AppRoutes = () => {
   const { projectsEnabled } = useSettings();
-  
+
   return (
     <Routes>
-      <Route path="/" element={<KnowledgeBasePage />} />
+      <Route path="/" element={<DashboardPage />} />
+      <Route path="/knowledge" element={<KnowledgeBasePage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="/mcp" element={<MCPPage />} />
