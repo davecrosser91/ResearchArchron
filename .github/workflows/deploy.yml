@@ -27,41 +27,42 @@ jobs:
               cd /root
               git clone https://github.com/davecrosser91/ResearchArchron.git
               cd ResearchArchron
-
-              # Create .env file from secrets (in root directory for docker-compose)
-              cat > .env << EOF
-            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
-            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-            EOF
-
-              echo "✅ Initial setup complete!"
             else
               echo "📥 Updating existing deployment..."
               cd /root/ResearchArchron
+
+              # Stop containers BEFORE pulling to avoid file locks
+              echo "🛑 Stopping services..."
+              docker compose down || true
             fi
 
-            # Pull latest changes from main branch
+            # Pull latest changes from main branch (force to override any local changes)
             echo "📥 Fetching latest code from main..."
             git fetch --all --tags
-            git checkout main
-            git pull origin main
+            git reset --hard origin/main
+            git clean -fd
 
-            # Update .env file with latest secrets (in root directory for docker-compose)
+            # Verify we have the latest code
+            echo "📋 Current commit:"
+            git log --oneline -1
+
+            # Create/Update .env file with latest secrets (in root directory for docker-compose)
             cat > .env << EOF
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
             SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             EOF
 
-            echo "🛑 Stopping services..."
-            docker compose down || true
+            # Remove ALL Docker images to force fresh build
+            echo "🧹 Cleaning Docker cache..."
+            docker system prune -af --volumes || true
 
-            echo "🏗️ Building and starting services..."
-            docker compose up -d --build
+            # Build and start services with no cache
+            echo "🏗️ Building fresh images (no cache)..."
+            docker compose build --no-cache --pull
 
-            echo "🧹 Cleaning up old images..."
-            docker image prune -af
+            echo "🚀 Starting services..."
+            docker compose up -d
 
             echo "✅ Deployment complete!"
             docker compose ps
