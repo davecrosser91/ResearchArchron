@@ -53,6 +53,9 @@ jobs:
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
             SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            ARCHON_HOST=mcp.rewire-ai.de
+            HOST=mcp.rewire-ai.de
+            VITE_ALLOWED_HOSTS=app.rewire-ai.de
             EOF
 
             # Remove ALL Docker images to force fresh build
