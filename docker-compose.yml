@@ -172,6 +172,7 @@ services:
     volumes:
       - ./archon-ui-main/src:/app/src
       - ./archon-ui-main/public:/app/public
+      - ./archon-ui-main/index.html:/app/index.html
     depends_on:
       archon-server:
         condition: service_healthy
